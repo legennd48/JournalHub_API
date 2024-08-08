@@ -1,4 +1,4 @@
-# JournalHub - (Backend)
+# JournalHub - (API)
 
 **Don't lose your spark, Journal it!**
 
@@ -90,12 +90,12 @@ JournalHub adopts the Model-View-Controller (MVC) pattern, with a Node.js server
 
 - **Register**:
     ```bash
-    curl -X POST http://localhost:5000/api/auth/register -H "Content-Type: application/json" -d '{"name": "user name", "email":"user@example.com", "password":"password"}'
+    curl -X POST http://localhost:5000/api/user/register -H "Content-Type: application/json" -d '{"name": "user name", "email":"user@example.com", "password":"password"}'
     ```
 
 - **Login**:
     ```bash
-    curl -X POST http://localhost:5000/login -H "Content-Type: application/json" -d '{"email":"user@example.com", "password":"password"}'
+    curl -X POST http://localhost:5000/api/userlogin -H "Content-Type: application/json" -d '{"email":"user@example.com", "password":"password"}'
     ```
 
 - **Logout**:
@@ -108,7 +108,7 @@ JournalHub adopts the Model-View-Controller (MVC) pattern, with a Node.js server
 
 - **Create Journal Entry**:
     ```bash
-    curl -X POST http://localhost:5000/journalEntries \
+    curl -X POST http://localhost:5000/api/journal-entries \
     -H "Authorization: Bearer <token>" \
     -H "userId: <user_id>" \
     -H "Content-Type: application/json" \

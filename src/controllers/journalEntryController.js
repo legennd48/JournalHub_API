@@ -1,5 +1,7 @@
 import JournalEntry from '../models/JournalEntry';
-import { verifyToken, extractToken } from '../utils/jwt';
+import { verifyToken, extractToken, extractUserId } from '../utils/jwt';
+
+const J = JournalEntry;
 
 /**
  * Controller class for handling journal entry operations.
@@ -13,24 +15,14 @@ class JournalEntryController {
    */
   static async createJournalEntry(req, res) {
     try {
-      const token = extractToken(req.headers);
-      if (!token) {
+      const authorId = extractUserId(req.headers);
+      if (!authorId) {
         return res.status(401).json({ error: 'Invalid token' });
-      }
-
-      const decoded = await verifyToken(token);
-      if (!decoded) {
-        return res.status(401).json({ error: 'Invalid token' });
-      }
-
-      const authorId = req.headers['userid']; // Corrected to 'userid' instead of 'userId'
-      if (!authorId || authorId !== decoded.userId) {
-        return res.status(401).json({ error: 'Invalid authorId' });
       }
 
       const { date, title, content } = req.body;
       const createdAt = date ? new Date(date) : new Date();
-      const newEntry = await JournalEntry.createJournalEntry(title, content, authorId, createdAt);
+      const newEntry = await J.createJournalEntry(title, content, authorId, createdAt);
 
       res.status(201).json(newEntry);
     } catch (error) {
@@ -46,12 +38,12 @@ class JournalEntryController {
    */
   static async getJournalEntriesByUser(req, res) {
     try {
-      const userId = req.header('userid'); // Corrected to 'userid'
+      const userId = extractUserId(req.headers);
       if (!userId) {
-        return res.status(401).json({ error: 'User ID header is missing' });
+        return res.status(401).json({ error: 'Token is missing or invalid' });
       }
 
-      const entries = await JournalEntry.getJournalEntriesByUser(userId);
+      const entries = await J.getJournalEntriesByUser(userId);
       res.status(200).json(entries);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -65,8 +57,11 @@ class JournalEntryController {
    * @returns {Promise<Object>} The journal entry.
    */
   static async getJournalEntryById(req, res) {
+    if (!(verifyToken(extractToken(req.headers)))) {
+      return res.status(401).json({ error: 'Access Denied' });
+    }
     try {
-      const entry = await JournalEntry.getJournalEntryById(req.params.id);
+      const entry = await J.getJournalEntryById(req.params.id);
       if (!entry) {
         return res.status(404).json({ error: 'Journal Entry not found' });
       }
@@ -83,9 +78,12 @@ class JournalEntryController {
    * @returns {Promise<Object>} The updated journal entry.
    */
   static async updateJournalEntry(req, res) {
+    if (!(verifyToken(extractToken(req.headers)))) {
+      return res.status(401).json({ error: 'Access Denied' });
+    }
     try {
       const { title, content } = req.body;
-      const updatedEntry = await JournalEntry.updateJournalEntry(req.params.id, title, content);
+      const updatedEntry = await J.updateJournalEntry(req.params.id, title, content);
       if (!updatedEntry) {
         return res.status(404).json({ error: 'Journal Entry not found' });
       }
@@ -102,8 +100,11 @@ class JournalEntryController {
    * @returns {Promise<void>}
    */
   static async deleteJournalEntry(req, res) {
+    if (!(verifyToken(extractToken(req.headers)))) {
+      return res.status(401).json({ error: 'Access Denied' });
+    }
     try {
-      const success = await JournalEntry.deleteJournalEntry(req.params.id);
+      const success = await J.deleteJournalEntry(req.params.id);
       if (!success) {
         return res.status(404).json({ error: 'Journal Entry not found' });
       }

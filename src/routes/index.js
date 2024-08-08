@@ -17,27 +17,26 @@ const router = express.Router();
  * @description Defines the API routes for the application.
  */
 
-// Api Status
-router.get('/api/status', AppController.getStatus); // Endpoint to check the status of the application
+// API Status and Statistics
+router.get('/api/status', AppController.getStatus); // Check application status
 router.get('/api/stats', (req, res) => AppController.getStats(req, res));
-router.get('/api/user/journal-entries/:id', (req, res) => AppController.getUserEntries(req, res));
+router.get('/api/user/:id/journal-entries', (req, res) => AppController.getUserEntries(req, res));
 
 // User Registration & Authentication
-router.post('/api/user/register', registerUser);
-router.post('/api/user/login', AuthController.login); // Endpoint to handle user login
-router.post('/api/user/logout', authenticate, AuthController.logout); // Endpoint to handle user logout
+router.post('/api/user/register', registerUser); // Register a new user
+router.post('/api/user/login', AuthController.login); // Handle user login
+router.post('/api/user/logout', authenticate, AuthController.logout); // Handle user logout (requires authentication)
 
 // Journal Entries
-router.post('/api/journal-entries', JournalEntryController.createJournalEntry); // Endpoint to create a new journal entry
-router.get('/api/journal-entries/user/:userId', JournalEntryController.getJournalEntriesByUser); // Endpoint to get all journal entries by user ID
-router.get('/api/journal-entries/:id', JournalEntryController.getJournalEntryById); // Endpoint to get a journal entry by ID
-router.put('/api/journal-entries/:id', JournalEntryController.updateJournalEntry); // Endpoint to update a journal entry by ID
-router.delete('/api/journal-entries/:id', JournalEntryController.deleteJournalEntry); // Endpoint to delete a journal entry by ID
+router.post('/api/journal-entries', JournalEntryController.createJournalEntry); // Create a new journal entry
+router.get('/api/journal-entries/user/:userId', authenticate, JournalEntryController.getJournalEntriesByUser); // Get all journal entries by user ID
+router.get('/api/journal-entries/:id', authenticate, JournalEntryController.getJournalEntryById); // Get a journal entry by ID
+router.put('/api/journal-entries/:id', authenticate, JournalEntryController.updateJournalEntry); // Update a journal entry by ID
+router.delete('/api/journal-entries/:id', authenticate, JournalEntryController.deleteJournalEntry); // Delete a journal entry by ID
 
 // User Profile Management
-
-router.get('/api/user/profile/:userId', authenticate, getUserProfile); // Add authenticate middleware
-router.put('/api/user/profile/:userId', authenticate, updateUserProfile); // Add authenticate middleware
-router.delete('/api/user/profile/:userId', authenticate, deleteUserAccount); // Add authenticate middleware
+router.get('/api/user/profile/:userId', authenticate, getUserProfile); // Get user profile (requires authentication)
+router.put('/api/user/profile/:userId', authenticate, updateUserProfile); // Update user profile (requires authentication)
+router.delete('/api/user/profile/:userId', authenticate, deleteUserAccount); // Delete user account (requires authentication)
 
 export default router;

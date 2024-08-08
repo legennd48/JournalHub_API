@@ -10,7 +10,7 @@ const SECRET_KEY = process.env.SECRET_KEY || 'This Is A Secret';
  * @returns {string} The generated JWT token.
  */
 export const generateToken = (userId) => {
-    return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '24h' });
+    return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '8h' });
 };
 
 /**
@@ -65,3 +65,21 @@ export const extractToken = (headers) => {
     }
     return null;
 };
+
+/**
+ * Extract the user Id from a JWT token extrcted from the req header.
+ * @function
+ * @param (object) header - The header object from the request.
+ * @returns {string|null} The extracted user ID if present, otherwise null.
+ */
+export const extractUserId = (header) => {
+    const token = extractToken(header);
+    if (!token) {
+        return null;
+    }
+    if (verifyToken(token)) {
+        const decoded = jwt.decode(token);
+        return decoded ? decoded.userId : null;
+    }
+    return null;
+}
