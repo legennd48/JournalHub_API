@@ -1,11 +1,13 @@
-import { verifyToken, isTokenBlacklisted } from '../utils/jwt';
+import { verifyToken, isTokenBlacklisted, extractToken } from '../utils/jwt';
 
 export const authenticate = async (req, res, next) => {
-    const authHeader = req.header('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).send({ message: 'Missing or invalid Authorization header' });
-    }
-    const token = authHeader.replace('Bearer ', '');
+    // const authHeader = req.header('Authorization');
+    // if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    //   return res.status(401).send({ message: 'Missing or invalid Authorization header' });
+    // }
+    // const token = authHeader.replace('Bearer ', '');
+
+    const token = await extractToken(req.headers);
 
     if (!token) {
         return res.status(401).send({ message: 'Access Denied' });
@@ -17,12 +19,13 @@ export const authenticate = async (req, res, next) => {
         return res.status(401).send({ message: 'you are already logged out' });
     }
 
-    const decoded = verifyToken(token);
+    const verified = await verifyToken(token);
 
-    if (!decoded) {
+    if (!verified) {
         return res.status(401).send({ message: 'Invalid Token' });
     }
 
-    req.user = decoded;
+    req.user = verified;
+    console.log('User:', req.user); // debug line, remember to remove
     next();
 };

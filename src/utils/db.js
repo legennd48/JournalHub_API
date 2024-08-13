@@ -2,7 +2,7 @@
 import { MongoClient, ObjectID } from 'mongodb';
 import EventEmitter from 'events';
 
-const { MONGO_URI } = process.env; // Url to be set as env variable
+const { MONGO_URI } = process.env; // Url to be set in .env file
 
 class DBClient extends EventEmitter {
   constructor() {
@@ -67,7 +67,6 @@ class DBClient extends EventEmitter {
       return count;
     } catch (error) {
       console.error('Error fetching user entries:', error);
-    // Handle the error appropriately, e.g., throw a custom error or return a default value
     }
   }
 

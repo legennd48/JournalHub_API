@@ -11,11 +11,19 @@ class RedisClient {
    */
   constructor() {
     this.client = redis.createClient();
+
+    // Bind event handlers
     this.client.on('error', (err) => {
-      console.log(err);
+      console.error('Redis client error:', err);
       this.connected = false;
     });
-    console.log('Redis connected successfully')
+
+    this.client.on('end', () => {
+      console.log('Redis client disconnected');
+      this.connected = false;
+    });
+
+    console.log('Redis connected successfully');
     this.connected = true;
   }
 
@@ -33,10 +41,20 @@ class RedisClient {
    * @returns {Promise<string|null>} Resolves with the retrieved value or null on error.
    */
   async get(key) {
-    const getPromise = promisify(this.client.get).bind(this.client);
-    const val = getPromise(key);
-    return val;
+    if (!this.connected) {
+      throw new Error('Redis client is not connected');
+    }
+
+    const getAsync = promisify(this.client.get).bind(this.client);
+    try {
+      const value = await getAsync(key);
+      return value;
+    } catch (error) {
+      console.error('Error getting value from Redis:', error);
+      return null;
+    }
   }
+
   /**
    * Asynchronously sets a key-value pair in Redis with an expiration time.
    * @param {string} key - The key to set.
@@ -45,10 +63,26 @@ class RedisClient {
    * @returns {Promise<void>} Resolves when the key is set.
    */
   async setex(key, value, duration) {
-    const setPromise = promisify(this.client.set).bind(this.client);
-    return setPromise(key, value, 'EX', duration);
+    if (!this.connected) {
+      throw new Error('Redis client is not connected');
+    }
+
+    const setexAsync = promisify(this.client.setex).bind(this.client);
+    try {
+      await setexAsync(key, duration, value);
+    } catch (error) {
+      console.error('Error setting value in Redis:', error);
+    }
   }
 
+  /**
+   * Properly closes the Redis client connection.
+   */
+  close() {
+    if (this.connected) {
+      this.client.quit();
+    }
+  }
 }
 
 /**
@@ -56,4 +90,10 @@ class RedisClient {
  * @type {RedisClient}
  */
 const redisClient = new RedisClient();
+
+// Ensure the client is properly closed on application exit
+process.on('exit', () => {
+  redisClient.close();
+});
+
 module.exports = redisClient;
