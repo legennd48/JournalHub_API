@@ -69,10 +69,10 @@ class AuthController {
                 return res.status(400).json({ message: 'Invalid token' });
             }
 
-            // Calculate the time until the token expires
-            const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+            // Calculate the expiration date and time
+            const expirationDate = new Date(decoded.exp * 1000);
             // Blacklist the token to prevent further use
-            await blacklistToken(token, expiresIn);
+            await blacklistToken(token, expirationDate);
             // Send a success response
             return res.status(200).json({ message: 'Logout successful' });
         } catch (error) {

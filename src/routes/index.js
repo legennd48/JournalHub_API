@@ -25,10 +25,10 @@ router.get('/api/user/:id/journal-entries', (req, res) => AppController.getUserE
 // User Registration & Authentication
 router.post('/api/user/register', registerUser); // Register a new user
 router.post('/api/user/login', AuthController.login); // Handle user login
-router.post('/api/user/logout', authenticate, AuthController.logout); // Handle user logout (requires authentication)
+router.post('/api/user/logout', authenticate, AuthController.logout); // Handle user logout
 
 // Journal Entries
-router.post('/api/journal-entries', JournalEntryController.createJournalEntry); // Create a new journal entry
+router.post('/api/journal-entries', authenticate, JournalEntryController.createJournalEntry); // Create a new journal entry
 router.get('/api/journal-entries/user/:userId', authenticate, JournalEntryController.getJournalEntriesByUser); // Get all journal entries by user ID
 router.get('/api/journal-entries/:id', authenticate, JournalEntryController.getJournalEntryById); // Get a journal entry by ID
 router.put('/api/journal-entries/:id', authenticate, JournalEntryController.updateJournalEntry); // Update a journal entry by ID

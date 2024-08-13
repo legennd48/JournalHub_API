@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-import redisClient from './redis';
+import dbClient from './db';
 
-const SECRET_KEY = process.env.SECRET_KEY || 'This Is A Secret';
+const SECRET_KEY = process.env.SECRET_KEY || 'This Is A Secret'; // remember to remove default value
 
 /**
  * Generates a JWT token.
@@ -31,14 +31,20 @@ export const verifyToken = async (token) => {
 };
 
 /**
- * Blacklists a JWT token by storing it in Redis.
+ * Blacklists a JWT token by storing it in a db collection.
  * @function
  * @param {string} token - The JWT token to blacklist.
- * @param {number} expiresIn - The time in seconds until the token expires.
+ * @param {number} expirationDate - The expiration date of the token.
  * @returns {Promise<void>} A promise that resolves when the token is blacklisted.
  */
-export const blacklistToken = (token, expiresIn) => {
-    return redisClient.setex(`black_${token}`, 'blacklisted', expiresIn);
+export const blacklistToken = (token, expirationDate) => {
+    return dbClient.db.collection('blacklisted_tokens').insertOne({ token, expirationDate })
+        .then(() => {
+            console.log('Token blacklisted successfully');
+        })
+        .catch((err) => {
+            console.error('Error blacklisting token:', err);
+        });
 };
 
 /**
@@ -48,8 +54,11 @@ export const blacklistToken = (token, expiresIn) => {
  * @returns {Promise<boolean>} A promise that resolves to true if the token is blacklisted, otherwise false.
  */
 export const isTokenBlacklisted = async (token) => {
-    const result = await redisClient.get(`black_${token}`);
-    return result === 'blacklisted';
+    const result = await dbClient.db.collection('blacklisted_tokens').findOne({ token });
+    if (!result) {
+        return false;
+    }
+    return true;
 };
 
 /**
@@ -61,25 +70,23 @@ export const isTokenBlacklisted = async (token) => {
 export const extractToken = (headers) => {
     const authHeader = headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
-        return authHeader.slice(7, authHeader.length);
+        const token = authHeader.slice(7, authHeader.length);
+        console.log('Token extracted:', token); // debug line, remember to remove
+        return token;
     }
     return null;
 };
-
 /**
  * Extract the user Id from a JWT token extrcted from the req header.
  * @function
- * @param (object) header - The header object from the request.
+ * @param {string} token - The token to extract the user ID from.
  * @returns {string|null} The extracted user ID if present, otherwise null.
  */
-export const extractUserId = (header) => {
-    const token = extractToken(header);
-    if (!token) {
-        return null;
-    }
-    if (verifyToken(token)) {
-        const decoded = jwt.decode(token);
-        return decoded ? decoded.userId : null;
-    }
-    return null;
-}
+// export const extractUserId = (token) => {
+//     if (verifyToken(token)) {
+//         const decoded = jwt.decode(token);
+//         console.log('Decoded token:', decoded.userId); // debug line, remember to remove
+//         return decoded ? decoded.userId : null;
+//     }
+//     return null;
+// }

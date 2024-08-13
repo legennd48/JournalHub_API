@@ -1,7 +1,7 @@
 import JournalEntry from '../models/JournalEntry';
 import { verifyToken, extractToken, extractUserId } from '../utils/jwt';
 
-const J = JournalEntry;
+const J = JournalEntry; // Alias for JournalEntry model
 
 /**
  * Controller class for handling journal entry operations.
@@ -15,14 +15,15 @@ class JournalEntryController {
    */
   static async createJournalEntry(req, res) {
     try {
-      const authorId = extractUserId(req.headers);
-      if (!authorId) {
+      const author_id = req.user['userId'];
+      console.log('Author ID:', author_id); // debug line, remember to remove
+      if (!author_id) {
         return res.status(401).json({ error: 'Invalid token' });
       }
 
       const { date, title, content } = req.body;
       const createdAt = date ? new Date(date) : new Date();
-      const newEntry = await J.createJournalEntry(title, content, authorId, createdAt);
+      const newEntry = await J.createJournalEntry(title, content, author_id, createdAt);
 
       res.status(201).json(newEntry);
     } catch (error) {
@@ -38,7 +39,7 @@ class JournalEntryController {
    */
   static async getJournalEntriesByUser(req, res) {
     try {
-      const userId = extractUserId(req.headers);
+      const userId = req.user['userId'];
       if (!userId) {
         return res.status(401).json({ error: 'Token is missing or invalid' });
       }
@@ -108,11 +109,12 @@ class JournalEntryController {
       if (!success) {
         return res.status(404).json({ error: 'Journal Entry not found' });
       }
-      res.status(204).send();
+      res.status(200).end('Journal Entry deleted successfully');
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 }
+
 
 export default JournalEntryController;

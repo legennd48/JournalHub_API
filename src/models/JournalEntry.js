@@ -9,13 +9,13 @@ class JournalEntry {
    * Create a journal entry.
    * @param {string} title - The title of the journal entry.
    * @param {string} content - The content of the journal entry.
-   * @param {ObjectID} authorId - The ID of the author.
+   * @param {ObjectID} author_id - The ID of the author.
    * @param {Date} [createdAt=new Date()] - The creation date of the journal entry.
    */
-  constructor(title, content, authorId, createdAt = new Date()) {
+  constructor(title, content, author_id, createdAt = new Date()) {
     this.title = title;
     this.content = content;
-    this.authorId = new ObjectID(authorId);
+    this.author_id = new ObjectID(author_id);
     this.createdAt = createdAt;
   }
 
@@ -23,11 +23,11 @@ class JournalEntry {
    * Create a new journal entry and save it to the database.
    * @param {string} title - The title of the journal entry.
    * @param {string} content - The content of the journal entry.
-   * @param {ObjectID} authorId - The ID of the author.
+   * @param {ObjectID} author_id - The ID of the author.
    * @returns {Promise<Object>} The created journal entry.
    */
-  static async createJournalEntry(title, content, authorId) {
-    const newEntry = new JournalEntry(title, content, authorId);
+  static async createJournalEntry(title, content, author_id) {
+    const newEntry = new JournalEntry(title, content, author_id);
     const result = await dbClient.db.collection('journal_entries').insertOne(newEntry);
     return result.ops[0];
   }
@@ -38,7 +38,7 @@ class JournalEntry {
    * @returns {Promise<Array>} The list of journal entries.
    */
   static async getJournalEntriesByUser(userId) {
-    const entries = await dbClient.db.collection('journal_entries').find({ authorId: new ObjectID(userId) }).toArray();
+    const entries = await dbClient.db.collection('journal_entries').find({ author_id: new ObjectID(userId) }).toArray();
     return entries;
   }
 
