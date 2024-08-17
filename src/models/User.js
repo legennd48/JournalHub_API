@@ -7,14 +7,16 @@ const USERS_COLLECTION = 'users';
 class User {
   // Constructor method for initializing user properties
   constructor({
-    name,
+    fullName,
+    nickname,
     email,
     password,
     role = 'user',
     isPrivate = false,
   }) {
-    // Generate a new ObjectID for user identification
-    this.name = name; // User's name
+    // Assign the provided values to the user instance properties
+    this.fullName = fullName; // User's name
+    this.nickname = nickname; // User's nickname
     this.email = email; // User's email
     this.password = password; // User's hashed password
     this.role = role; // User's role (default is 'user')
@@ -26,7 +28,7 @@ class User {
     const { db } = dbClient; // Destructure db from dbClient
     // Insert the current user instance into the 'users' collection
     const result = await db.collection(USERS_COLLECTION).insertOne(this);
-    return result.insertedId; // Return the inserted document ID
+    return result.insertedId; // Return the inserted document ID, nickname, and email
   }
 
   // Static method to find a user by their email

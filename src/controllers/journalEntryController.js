@@ -1,5 +1,5 @@
 import JournalEntry from '../models/JournalEntry';
-import { verifyToken, extractToken, extractUserId } from '../utils/jwt';
+import { verifyToken, extractToken } from '../utils/jwt';
 
 const J = JournalEntry; // Alias for JournalEntry model
 
@@ -16,6 +16,7 @@ class JournalEntryController {
   static async createJournalEntry(req, res) {
     try {
       const author_id = req.user['userId'];
+      const author_name = req.user['nickname']
       console.log('Author ID:', author_id); // debug line, remember to remove
       if (!author_id) {
         return res.status(401).json({ error: 'Invalid token' });
@@ -23,7 +24,7 @@ class JournalEntryController {
 
       const { date, title, content } = req.body;
       const createdAt = date ? new Date(date) : new Date();
-      const newEntry = await J.createJournalEntry(title, content, author_id, createdAt);
+      const newEntry = await J.createJournalEntry(title, content, author_id, author_name, createdAt);
 
       res.status(201).json(newEntry);
     } catch (error) {

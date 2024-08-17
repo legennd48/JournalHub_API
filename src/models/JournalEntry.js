@@ -12,10 +12,11 @@ class JournalEntry {
    * @param {ObjectID} author_id - The ID of the author.
    * @param {Date} [createdAt=new Date()] - The creation date of the journal entry.
    */
-  constructor(title, content, author_id, createdAt = new Date()) {
+  constructor(title, content, author_id, author_nickname, createdAt = new Date()) {
     this.title = title;
     this.content = content;
     this.author_id = new ObjectID(author_id);
+    this.author_name = author_nickname;
     this.createdAt = createdAt;
   }
 
@@ -26,8 +27,8 @@ class JournalEntry {
    * @param {ObjectID} author_id - The ID of the author.
    * @returns {Promise<Object>} The created journal entry.
    */
-  static async createJournalEntry(title, content, author_id) {
-    const newEntry = new JournalEntry(title, content, author_id);
+  static async createJournalEntry(title, content, author_id, author_name) {
+    const newEntry = new JournalEntry(title, content, author_id, author_name);
     const result = await dbClient.db.collection('journal_entries').insertOne(newEntry);
     return result.ops[0];
   }
@@ -88,6 +89,23 @@ class JournalEntry {
     }
     const result = await dbClient.db.collection('journal_entries').deleteOne({ _id: new ObjectID(entryId) });
     return result.deletedCount > 0;
+  }
+
+  /**
+  * Delete all journal entries associated with a specific user.
+  * @param {string} userId - The ID of the user.
+  * @returns {Promise<boolean>} True if the journal entries were deleted, false otherwise.
+  * @throws {Error} Will throw an error if the ID is invalid.
+  */
+  static async deleteJournalEntriesByUser(userId) {
+    if (!ObjectID.isValid(userId)) {
+      throw new Error('Invalid ID');
+    }
+    const result = await dbClient.db.collection('journal_entries').deleteMany({ author_id: new ObjectID(userId) });
+    if (result) {
+      return true;
+    }
+    return false;
   }
 }
 

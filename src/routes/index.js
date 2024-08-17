@@ -10,6 +10,8 @@ import {
 } from '../controllers/userController';
 import JournalEntryController from '../controllers/journalEntryController';
 
+const Journal = JournalEntryController; // Alias for JournalEntryController
+
 const router = express.Router();
 
 /**
@@ -28,15 +30,15 @@ router.post('/api/user/login', AuthController.login); // Handle user login
 router.post('/api/user/logout', authenticate, AuthController.logout); // Handle user logout
 
 // Journal Entries
-router.post('/api/journal-entries', authenticate, JournalEntryController.createJournalEntry); // Create a new journal entry
-router.get('/api/journal-entries/user/:userId', authenticate, JournalEntryController.getJournalEntriesByUser); // Get all journal entries by user ID
-router.get('/api/journal-entries/:id', authenticate, JournalEntryController.getJournalEntryById); // Get a journal entry by ID
-router.put('/api/journal-entries/:id', authenticate, JournalEntryController.updateJournalEntry); // Update a journal entry by ID
-router.delete('/api/journal-entries/:id', authenticate, JournalEntryController.deleteJournalEntry); // Delete a journal entry by ID
+router.post('/api/journal-entries', authenticate, Journal.createJournalEntry); // Create a new journal entry
+router.get('/api/journal-entries/user/', authenticate, Journal.getJournalEntriesByUser); // Get all journal entries by user ID
+router.get('/api/journal-entries/:id', authenticate, Journal.getJournalEntryById); // Get a journal entry by ID
+router.put('/api/journal-entries/:id', authenticate, Journal.updateJournalEntry); // Update a journal entry by ID
+router.delete('/api/journal-entries/:id', authenticate, Journal.deleteJournalEntry); // Delete a journal entry by ID
 
 // User Profile Management
-router.get('/api/user/profile/:userId', authenticate, getUserProfile); // Get user profile (requires authentication)
-router.put('/api/user/profile/:userId', authenticate, updateUserProfile); // Update user profile (requires authentication)
-router.delete('/api/user/profile/:userId', authenticate, deleteUserAccount); // Delete user account (requires authentication)
+router.get('/api/user/profile/', authenticate, getUserProfile); // Get user profile (requires authentication)
+router.put('/api/user/profile/', authenticate, updateUserProfile); // Update user profile (requires authentication)
+router.delete('/api/user/profile/', authenticate, deleteUserAccount); // Delete user account (requires authentication)
 
 export default router;

@@ -3,14 +3,29 @@ import dbClient from './db';
 
 const SECRET_KEY = process.env.SECRET_KEY || 'This Is A Secret'; // remember to remove default value
 
+// Function to ensure TTL index is created, this should only run once
+const ensureTTLIndex = async () => {
+    try {
+        // Create TTL index on the expirationDate field with expireAfterSeconds set to 0
+        await dbClient.db.collection('blacklisted_tokens').createIndex(
+            { expirationDate: 1 },
+            { expireAfterSeconds: 0 }
+        );
+        console.log('TTL index set on expirationDate');
+    } catch (err) {
+        console.error('Error setting TTL index:', err);
+    }
+};
+
+
 /**
  * Generates a JWT token.
  * @function
  * @param {string} userId - The user ID to include in the token payload.
  * @returns {string} The generated JWT token.
  */
-export const generateToken = (userId) => {
-    return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '8h' });
+export const generateToken = (userId, nickname, fullName, email) => {
+    return jwt.sign({ userId, nickname, fullName, email }, SECRET_KEY, { expiresIn: '8h' });
 };
 
 /**
@@ -34,17 +49,19 @@ export const verifyToken = async (token) => {
  * Blacklists a JWT token by storing it in a db collection.
  * @function
  * @param {string} token - The JWT token to blacklist.
- * @param {number} expirationDate - The expiration date of the token.
+ * @param {Date} expirationDate - The expiration date of the token.
  * @returns {Promise<void>} A promise that resolves when the token is blacklisted.
  */
-export const blacklistToken = (token, expirationDate) => {
-    return dbClient.db.collection('blacklisted_tokens').insertOne({ token, expirationDate })
-        .then(() => {
-            console.log('Token blacklisted successfully');
-        })
-        .catch((err) => {
-            console.error('Error blacklisting token:', err);
-        });
+export const blacklistToken = async (token, expirationDate) => {
+    try {
+        // Ensure TTL index is set before inserting a document
+        await ensureTTLIndex();
+
+        await dbClient.db.collection('blacklisted_tokens').insertOne({ token, expirationDate });
+        console.log('Token blacklisted successfully'); // debug line, remember to remove
+    } catch (err) {
+        console.error('Error blacklisting token:', err);
+    }
 };
 
 /**
@@ -76,6 +93,33 @@ export const extractToken = (headers) => {
     }
     return null;
 };
+
+/** 
+ * Decodes and calculates the expiration date of a JWT token.
+ * @function
+ * @param {string} token - The JWT token to extract the expiration date from.
+ * returns {Date|null} The expiration date of the token if valid, otherwise null.
+ */
+export const extractTokenExpiration = (token) => {
+    try {
+        // Decode the token to get its payload
+        const decoded = jwt.decode(token);
+        if (!decoded) {
+            // If the token is invalid, send a 400 response
+            return null;
+        }
+
+        // Calculate the expiration date and time
+        const expirationDate = new Date(decoded.exp * 1000);
+        console.log('Expiration date:', expirationDate); // debug line, remember to remove
+        return expirationDate;
+    }
+    catch (error) {
+        console.error('Error extracting token expiration:', error);
+        return null;
+    }
+}
+
 /**
  * Extract the user Id from a JWT token extrcted from the req header.
  * @function
