@@ -76,9 +76,15 @@ class JournalEntry {
     if (!ObjectID.isValid(entryId)) {
       throw new Error('Invalid ID');
     }
+     // Prepare the update object with only the fields that are provided
+     const updateData = {};
+     if (title !== undefined) updateData.title = title;
+     if (content !== undefined) updateData.content = content;
+     if (isPublic !== undefined) updateData.isPublic = isPublic;
+
     const updatedEntry = await dbClient.db.collection('journal_entries').findOneAndUpdate(
       { _id: new ObjectID(entryId) },
-      { $set: { title, content, isPublic } },
+      { $set: updateData },
       { returnDocument: 'after' }
     );
     return updatedEntry.value;
