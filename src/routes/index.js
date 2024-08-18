@@ -30,6 +30,7 @@ router.post('/api/user/login', AuthController.login); // Handle user login
 router.post('/api/user/logout', authenticate, AuthController.logout); // Handle user logout
 
 // Journal Entries
+router.get('/api/public/journal-entries', Journal.getPublicJournalEntries); // Get all public journal entries
 router.post('/api/journal-entries', authenticate, Journal.createJournalEntry); // Create a new journal entry
 router.get('/api/journal-entries/user/', authenticate, Journal.getJournalEntriesByUser); // Get all journal entries by user ID
 router.get('/api/journal-entries/:id', authenticate, Journal.getJournalEntryById); // Get a journal entry by ID

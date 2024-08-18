@@ -22,9 +22,10 @@ class JournalEntryController {
         return res.status(401).json({ error: 'Invalid token' });
       }
 
-      const { date, title, content } = req.body;
+      const { date, title, content, isPublic } = req.body;
       const createdAt = date ? new Date(date) : new Date();
-      const newEntry = await J.createJournalEntry(title, content, author_id, author_name, createdAt);
+      const newEntry = await J.createJournalEntry(title, content, author_id, author_name, createdAt, isPublic);
+      console.log('isPublic:', newEntry.isPublic); // debug line, remember to remove
 
       res.status(201).json(newEntry);
     } catch (error) {
@@ -84,8 +85,8 @@ class JournalEntryController {
       return res.status(401).json({ error: 'Access Denied' });
     }
     try {
-      const { title, content } = req.body;
-      const updatedEntry = await J.updateJournalEntry(req.params.id, title, content);
+      const { title, content, isPublic=false } = req.body;
+      const updatedEntry = await J.updateJournalEntry(req.params.id, title, content, isPublic);
       if (!updatedEntry) {
         return res.status(404).json({ error: 'Journal Entry not found' });
       }
@@ -115,6 +116,19 @@ class JournalEntryController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  /**
+   * Get all public journal entries.
+   * @returns {Promise<Array>} The list of public journal entries.
+   */
+  static async getPublicJournalEntries(req, res) {
+    try {
+      const entries = await J.getPublicJournalEntries();
+      res.status(200).json(entries);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
 }
 
 
