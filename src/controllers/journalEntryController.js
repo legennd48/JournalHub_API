@@ -139,7 +139,7 @@ class JournalEntryController {
   static async searchJournalEntries(req, res) {
     try {
       const userId = req.user['userId'];
-      const query = req.query;
+      const query = req.params.query;
 
       if (!userId) {
         return res.status(401).json({ error: 'Token is missing or invalid' });
@@ -149,7 +149,7 @@ class JournalEntryController {
         return res.status(400).json({ error: 'Search query is required' });
       }
 
-      const entries = await J.searchJournalEntries(userId, query);
+      const entries = await J.searchJournal(userId, query);
       res.status(200).json(entries);
     } catch (error) {
       res.status(500).json({ error: error.message });

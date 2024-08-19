@@ -134,7 +134,7 @@ class JournalEntry {
    * @param {string} query - The search query.
    * @returns {Promise<Array>} The list of journal entries that match the search query.
    */
-  static async searchJournalEntries(userId, query) {
+  static async searchJournal(userId, query) {
     const entries = await dbClient.db.collection('journal_entries').find({
       $and: [
         { author_id: new ObjectID(userId) },
