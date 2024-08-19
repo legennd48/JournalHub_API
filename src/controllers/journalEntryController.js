@@ -139,7 +139,7 @@ class JournalEntryController {
   static async searchJournalEntries(req, res) {
     try {
       const userId = req.user['userId'];
-      const query = req.params.query;
+      const query = req.query.q;
 
       if (!userId) {
         return res.status(401).json({ error: 'Token is missing or invalid' });
@@ -156,6 +156,5 @@ class JournalEntryController {
     }
   }
 }
-
 
 export default JournalEntryController;
