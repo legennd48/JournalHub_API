@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { generateToken, blacklistToken, extractToken } from '../utils/jwt';
+import { generateToken, blacklistToken, extractToken, extractTokenExpiration } from '../utils/jwt';
 import dbClient from '../utils/db';
 
 /**
@@ -35,7 +35,8 @@ class AuthController {
             }
 
             // Generate a JWT token for the user
-            const token = generateToken(user._id.toString());
+            console.log('User:', user); // debug line, remember to remove
+            const token = generateToken(user._id.toString(), user.nickname, user.fullName, user.email);
             // Send the token and user ID as a response
             return res.status(200).json({ token, userId: user._id });
         } catch (error) {
@@ -60,18 +61,12 @@ class AuthController {
             // If the header is missing or doesn't start with 'Bearer ', send a 401 response
             return res.status(401).send({ message: 'Missing or invalid Authorization header' });
         }
-    
         try {
-            // Decode the token to get its payload
-            const decoded = jwt.decode(token);
-            if (!decoded) {
+            const expirationDate = await extractTokenExpiration(token);
+            if (!expirationDate) {
                 // If the token is invalid, send a 400 response
-                return res.status(400).json({ message: 'Invalid token' });
+                return res.status(400).send({ message: 'Invalid Token' });
             }
-
-            // Calculate the expiration date and time
-            const expirationDate = new Date(decoded.exp * 1000);
-            // Blacklist the token to prevent further use
             await blacklistToken(token, expirationDate);
             // Send a success response
             return res.status(200).json({ message: 'Logout successful' });

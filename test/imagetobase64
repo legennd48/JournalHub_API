@@ -1,0 +1,10 @@
+const fs = require('fs');
+
+// Read the image file
+const imageBuffer = fs.readFileSync('../default-avatar.jpg');
+
+// Convert to base64 string
+const base64Image = imageBuffer.toString('base64');
+
+// You can now use this base64Image string as your default image.
+console.log(base64Image);
