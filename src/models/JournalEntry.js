@@ -126,6 +126,23 @@ class JournalEntry {
     const entries = await dbClient.db.collection('journal_entries').find({ isPublic: true }).toArray();
     return entries;
   }
+
+
+  /**
+   * Search journal entries by title and content.
+   * @param {ObjectID} userId - The ID of the user.
+   * @param {string} query - The search query.
+   * @returns {Promise<Array>} The list of journal entries that match the search query.
+   */
+  static async searchJournalEntries(userId, query) {
+    const entries = await dbClient.db.collection('journal_entries').find({
+      $and: [
+        { author_id: new ObjectID(userId) },
+        { $text: { $search: query } },
+      ]
+    }).toArray();
+    return entries;
+  }
 }
 
 export default JournalEntry;

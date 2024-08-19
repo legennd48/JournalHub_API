@@ -129,6 +129,32 @@ class JournalEntryController {
       res.status(500).json({ error: error.message });
     }
 }
+
+  /**
+   * Search for journal entries by title or content.
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object 
+   * @returns {Promise<Array>} The list of journal entries that match the search query.
+   */
+  static async searchJournalEntries(req, res) {
+    try {
+      const userId = req.user['userId'];
+      const query = req.query;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Token is missing or invalid' });
+      }
+
+      if (!query) {
+        return res.status(400).json({ error: 'Search query is required' });
+      }
+
+      const entries = await J.searchJournalEntries(userId, query);
+      res.status(200).json(entries);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
 
 
