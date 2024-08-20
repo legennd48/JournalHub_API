@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+// /* eslint-disable class-methods-use-this */
 import { MongoClient, ObjectID } from 'mongodb';
 import EventEmitter from 'events';
 
@@ -46,7 +46,7 @@ class DBClient extends EventEmitter {
   async allEntries() {
     try {
       const count = await this.client.db()
-        .collection('journalEntries')
+        .collection('journal_entries')
         .countDocuments();
       return count;
     } catch (error) {
@@ -62,7 +62,7 @@ class DBClient extends EventEmitter {
   async allUserEntries(userId) {
     try {
       const count = await this.client.db()
-        .collection('journalEntries')
+        .collection('journal_entries')
         .countDocuments({ authorId: ObjectID(userId) });
       return count;
     } catch (error) {

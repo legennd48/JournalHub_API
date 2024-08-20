@@ -1,5 +1,8 @@
-// import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
+import {
+  HTTP_STATUS_OK,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '../httpStatusCodes';
 
 class AppController {
   /**
@@ -7,11 +10,11 @@ class AppController {
    * @param {Object} req The request object.
    * @param {Object} res The response object.
    */
-  async getStatus(req, res) {
+  getStatus(req, res) {
     const data = {
       db: dbClient.isAlive(),
     };
-    res.status(200).json(data);
+    res.status(HTTP_STATUS_OK).json(data);
   }
 
   /**
@@ -25,9 +28,9 @@ class AppController {
         users: await dbClient.allUsers(),
         entries: await dbClient.allEntries()
       };
-      res.status(200).json(data);
+      res.status(HTTP_STATUS_OK).json(data);
     } catch (error) {
-      res.status(500).json({ error: 'An error occurred while fetching statistics.' });
+      res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'An error occurred while fetching statistics.' });
     }
   }
 
@@ -40,9 +43,9 @@ class AppController {
     try {
       const user_id = req.params.id;
       const userEntries = await dbClient.allUserEntries(user_id);
-      res.status(200).json({ userId: user_id, user_entries: userEntries });
+      res.status(HTTP_STATUS_OK).json({ userId: user_id, user_entries: userEntries });
     } catch (error) {
-      res.status(500).json({ error: 'An error occurred while fetching user entries.' });
+      res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'An error occurred while fetching user entries.' });
     }
   }
 }
