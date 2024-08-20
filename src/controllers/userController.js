@@ -89,10 +89,37 @@ async function deleteUserAccount(req, res) {
   }
 }
 
+async function updateUserPassword(req, res) {
+  const userId = req.user['userId'];
+  const { password, newPassword } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    await User.update(userId, { password: hashedPassword });
+    
+    res.status(200).json({ message: 'Password updated successfully' });
+
+  } catch (error) {
+    console.error('Error updating user password:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+
 // Export all controller functions as named exports
 export {
   registerUser,
   getUserProfile,
   updateUserProfile,
   deleteUserAccount,
+  updateUserPassword,
 };
