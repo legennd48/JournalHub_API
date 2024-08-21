@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { text } from 'stream/consumers';
+require('dotenv').config();
 
 if (!process.env.EMAIL || !process.env.PASSWORD) {
     throw new Error('Email and password environment variables are not set');
