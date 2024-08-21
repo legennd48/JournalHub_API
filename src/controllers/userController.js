@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'; // Library for hashing passwords
 import User from '../models/User'; // User model for interacting with users
 import { extractToken, blacklistToken, extractTokenExpiration } from '../utils/jwt'; // Utility function to extract JWT from request headers
 import JournalEntry from '../models/JournalEntry';
+import { sendWelcomeMail } from '../utils/mailer';
 import {
   HTTP_STATUS_OK,
   HTTP_STATUS_CREATED,
@@ -30,6 +31,9 @@ async function registerUser(req, res) {
     // Create new user instance
     const newUser = new User({ fullName, nickname, email, password: hashedPassword });
     const userId = await newUser.save(); // Save new user to the database
+
+    // Send welcome email
+    await sendWelcomeMail(email);
 
     return res.status(HTTP_STATUS_CREATED).json({ userId }); // Respond with the newly created user's ID
   } catch (error) {
