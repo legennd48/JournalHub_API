@@ -7,6 +7,7 @@ import {
   getUserProfile,
   updateUserProfile,
   deleteUserAccount,
+  updateUserPassword,
 } from '../controllers/userController';
 import JournalEntryController from '../controllers/journalEntryController';
 
@@ -36,10 +37,12 @@ router.get('/api/journal-entries/user/', authenticate, Journal.getJournalEntries
 router.get('/api/journal-entries/:id', authenticate, Journal.getJournalEntryById); // Get a journal entry by ID
 router.put('/api/journal-entries/:id', authenticate, Journal.updateJournalEntry); // Update a journal entry by ID
 router.delete('/api/journal-entries/:id', authenticate, Journal.deleteJournalEntry); // Delete a journal entry by ID
+router.get('/api/search/journal-entries', authenticate, Journal.searchJournalEntries); // Search journal entries
 
 // User Profile Management
 router.get('/api/user/profile/', authenticate, getUserProfile); // Get user profile (requires authentication)
 router.put('/api/user/profile/', authenticate, updateUserProfile); // Update user profile (requires authentication)
 router.delete('/api/user/profile/', authenticate, deleteUserAccount); // Delete user account (requires authentication)
+router.put('/api/user/profile/password', authenticate, updateUserPassword); // Update user password (requires authentication)
 
 export default router;
