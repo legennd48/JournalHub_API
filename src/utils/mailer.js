@@ -16,7 +16,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
   async function sendWelcomeMail(email) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Welcome to JournalHub',
         html: `
@@ -36,7 +36,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
   async function sendPasswordResetMail(email, token) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Password Reset Request',
         html: `
@@ -58,7 +58,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
   async function sendPasswordChangedMail(email) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Password Changed',
         html: `
@@ -77,7 +77,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
   async function sendAccountDeletedMail(email) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Account Deleted',
         html: `
@@ -96,7 +96,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
   async function sendProfileUpdatedMail(email) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Profile Updated',
         html: `
