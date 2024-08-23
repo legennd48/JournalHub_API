@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt'; // Library for hashing passwords
 import User from '../models/User'; // User model for interacting with users
 import { extractToken, blacklistToken, extractTokenExpiration } from '../utils/jwt'; // Utility function to extract JWT from request headers
 import JournalEntry from '../models/JournalEntry';
-import { sendWelcomeMail, sendProfileUpdatedMail } from '../utils/mailer';
+import { sendWelcomeMail, sendProfileUpdatedMail, sendPasswordChangedMail, sendAccountDeletedMail } from '../utils/mailer';
 import {
   HTTP_STATUS_OK,
   HTTP_STATUS_CREATED,
@@ -80,6 +80,7 @@ async function updateUserProfile(req, res) {
 // Controller function to delete user account by ID
 async function deleteUserAccount(req, res) {
   const userId = req.user.userId; // Extract userId from authenticated user
+  const email = req.user.email;
   const token = extractToken(req.headers); // Extract token from request headers
   try {
     // Use the JournalEntry class to delete journal entries
@@ -95,6 +96,7 @@ async function deleteUserAccount(req, res) {
       return res.status(HTTP_STATUS_BAD_REQUEST).send({ error: 'Invalid Token' });
     }
     await blacklistToken(token, expirationDate); // Blacklist the token used for authentication
+    sendAccountDeletedMail(email);
 
     return res.status(HTTP_STATUS_OK).json({ message: 'User account deleted successfully' }); // Respond with success message
   } catch (error) {
@@ -120,6 +122,7 @@ async function updateUserPassword(req, res) {
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
     await User.update(userId, { password: hashedPassword });
+    sendPasswordChangedMail(user.email);
 
     return res.status(HTTP_STATUS_OK).json({ message: 'Password updated successfully' });
 
