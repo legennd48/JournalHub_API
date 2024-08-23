@@ -1,6 +1,7 @@
 // /* eslint-disable class-methods-use-this */
 import { MongoClient, ObjectID } from 'mongodb';
 import EventEmitter from 'events';
+require('dotenv').config();
 
 const { MONGO_URI } = process.env; // Url to be set in .env file
 

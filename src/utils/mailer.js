@@ -93,7 +93,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
     }
   }
 
-  async function sendprofileUpdatedMail(email) {
+  async function sendProfileUpdatedMail(email) {
     try {
       const mailOptions = {
         from: process.env.EMAIL,
@@ -112,4 +112,10 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
     }
   }
   
-  export { sendWelcomeMail };
+  export {
+    sendWelcomeMail,
+    sendPasswordResetMail,
+    sendPasswordChangedMail,
+    sendAccountDeletedMail,
+    sendProfileUpdatedMail,
+  };
