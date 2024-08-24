@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import dbClient from './db';
 require('dotenv').config();
 
-const SECRET_KEY = process.env.SECRET_KEY; // remember to remove default value
+const SECRET_KEY = process.env.SECRET_KEY;
 
 // Function to ensure TTL index is created, this should only run once
 const ensureTTLIndex = async () => {
