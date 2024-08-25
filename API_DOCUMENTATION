@@ -1,0 +1,125 @@
+Introduction
+
+The JournalHub API is an online journal platform designed to enable users to perform basic journaling functions, such as creating, reading, updating, and deleting (CRUD) their journal entries. It ensures that all journal entries are securely stored in the cloud, providing users with a safe and accessible way to manage their personal or professional journals. The API is intended for use by anyone who wants a simple and reliable journaling tool.
+
+Architecture
+
+The JournalHub API is structured around a modular architecture that promotes separation of concerns and scalability. The architecture is organized into several key components:
+
+Controllers:
+
+App Controller: Manages the initialization of the application and handles generic routes.
+JournalEntries Controller: Handles all operations related to journal entries, including creating, reading, updating, and deleting entries. It ensures that entries are correctly associated with users and that access controls are enforced.
+User Controller: Manages user-related operations, such as registration, profile management, and account deletion.
+Auth Controller: Handles authentication and authorization processes, including user login, token generation, password resets, and token validation.
+Models:
+
+JournalEntry Model: Represents the structure of a journal entry within the database, including fields such as title, content, and visibility (public/private). It defines the relationships between entries and users.
+User Model: Represents user information within the database, including fields such as full name, nickname, email, and password. It defines relationships with journal entries and manages user authentication data.
+Utilities:
+
+db.js: Manages the connection to the MongoDB database, ensuring that the API can efficiently read from and write to the database.
+jwt.js: Provides functions for generating and verifying JSON Web Tokens (JWT), which are used for securing API routes and managing user sessions.
+mailer.js: Handles the sending of emails, such as welcome emails, password reset instructions, and notifications for changes to user accounts.
+Middleware:
+
+Middleware functions are used throughout the application to handle tasks such as validating incoming requests, checking user authentication status, and logging application activity.
+Database:
+
+The application uses MongoDB as its primary data store, leveraging its document-based structure to manage user information and journal entries. MongoDB’s flexible schema allows the API to efficiently handle various types of journal content and user data.
+Security:
+
+Security is a core focus of the JournalHub API. User passwords are hashed using bcrypt before being stored in the database. JWT tokens are used to manage user sessions, ensuring that only authenticated users can access or modify their data. Additionally, sensitive operations like password resets are secured through token-based authentication and validation.
+
+Base URL: http://localhost:5000/api/.
+
+Authentication: Mention the type of authentication used (e.g., JWT) and the process to obtain a token.
+2. Authentication
+Registration
+Endpoint: /api/user/register
+Method: POST
+Request Body: JSON object containing fullName, nickname, email, password.
+Response: Success message or error details.
+Login
+Endpoint: /api/user/login
+Method: POST
+Request Body: JSON object containing email and password.
+Response: JWT token or error message.
+Logout
+Endpoint: /api/user/logout
+Method: POST
+Headers: Authorization: Bearer <token>
+Response: Success message or error details.
+3. User Management
+Get User Profile
+Endpoint: /api/user/profile
+Method: GET
+Headers: Authorization: Bearer <token>
+Response: User details or error message.
+Update User Profile
+Endpoint: /api/user/profile
+Method: PUT
+Headers: Authorization: Bearer <token>
+Request Body: JSON object containing fields to update (fullName, nickname).
+Response: Updated user details or error message.
+Delete User Account
+Endpoint: /api/user/profile
+Method: DELETE
+Headers: Authorization: Bearer <token>
+Response: Success message or error details.
+Update Password
+Endpoint: /api/user/profile/password
+Method: PUT
+Headers: Authorization: Bearer <token>
+Request Body: JSON object containing password and newPassword.
+Response: Success message or error details.
+4. Journal Entries
+Create Journal Entry
+Endpoint: /api/journal-entries
+Method: POST
+Headers: Authorization: Bearer <token>
+Request Body: JSON object containing title, content, and isPublic.
+Response: Created journal entry details or error message.
+Get Journal Entries by User ID
+Endpoint: /api/journal-entries/user/:userId
+Method: GET
+Headers: Authorization: Bearer <token>
+Response: Array of journal entries or error message.
+Update Journal Entry
+Endpoint: /api/journal-entries/:entryId
+Method: PUT
+Headers: Authorization: Bearer <token>
+Request Body: JSON object containing fields to update (title, content, isPublic).
+Response: Updated journal entry or error message.
+Delete Journal Entry
+Endpoint: /api/journal-entries/:entryId
+Method: DELETE
+Headers: Authorization: Bearer <token>
+Response: Success message or error details.
+Get Public Journal Entries
+Endpoint: /api/public/journal-entries
+Method: GET
+Response: Array of public journal entries or error message.
+Search Journal Entries
+Endpoint: /api/search/journal-entries
+Method: GET
+Headers: Authorization: Bearer <token>
+Query Params: q (search term).
+Response: Array of matching journal entries or error message.
+5. Error Handling
+Standard Error Responses: Describe the format of error messages, including statusCode, message, and possible causes.
+Common Error Codes: List common HTTP status codes returned by the API (e.g., 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error).
+6. Rate Limiting
+Overview: Mention if the API has any rate-limiting to prevent abuse, including the number of allowed requests per minute/hour.
+7. Versioning
+API Versioning: Explain if and how the API is versioned (e.g., using URL path /v1/).
+8. Security Considerations
+Data Protection: Discuss how sensitive data (e.g., passwords) is handled and stored.
+JWT Security: Mention token expiration and best practices for storing JWTs.
+9. Examples
+Sample Requests: Provide curl commands for each endpoint, showing example requests and responses.
+Code Samples: Include sample code snippets for integrating the API with different programming languages or tools.
+10. Changelog
+Version History: Document changes made to the API, including new features, bug fixes, and deprecated endpoints.
+11. Contact Information
+Support: Provide contact details for API support or troubleshooting.
