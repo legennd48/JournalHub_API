@@ -133,17 +133,3 @@ export const generatePasswordResetToken = (email, userId) => {
     return token;
 }
 
-/**
- * Extract the user Id from a JWT token extrcted from the req header.
- * @function
- * @param {string} token - The token to extract the user ID from.
- * @returns {string|null} The extracted user ID if present, otherwise null.
- */
-// export const extractUserId = (token) => {
-//     if (verifyToken(token)) {
-//         const decoded = jwt.decode(token);
-//         console.log('Decoded token:', decoded.userId); // debug line, remember to remove
-//         return decoded ? decoded.userId : null;
-//     }
-//     return null;
-// }

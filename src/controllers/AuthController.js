@@ -63,7 +63,7 @@ class AuthController {
             const token = generateToken(user._id.toString(), user.nickname, user.fullName, user.email);
             // Send the token and user ID as a response
             // eslint-disable-next-line no-underscore-dangle
-            return res.status(HTTP_STATUS_OK).json({ token, userId: user._id });
+            return res.status(HTTP_STATUS_OK).json({ token });
         } catch (error) {
             // If there's an error, log it and send a 500 response
             console.error(error);
