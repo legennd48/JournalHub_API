@@ -51,8 +51,10 @@ class JournalEntryController {
       if (!userId) {
         return res.status(HTTP_STATUS_UNAUTHORIZED).json({ error: 'Token is missing or invalid' });
       }
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
 
-      const entries = await J.getJournalEntriesByUser(userId);
+      const entries = await J.getJournalEntriesByUser(userId, page, limit);
       return res.status(HTTP_STATUS_OK).json(entries);
     } catch (error) {
       return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: error.message });
@@ -129,7 +131,10 @@ class JournalEntryController {
    */
   static async getPublicJournalEntries(req, res) {
     try {
-      const entries = await J.getPublicJournalEntries();
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+
+      const entries = await J.getPublicJournalEntries(page, limit);
       return res.status(HTTP_STATUS_OK).json(entries);
     } catch (error) {
       return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: error.message });

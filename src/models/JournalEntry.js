@@ -44,8 +44,13 @@ class JournalEntry {
    * @param {ObjectID} userId - The ID of the user.
    * @returns {Promise<Array>} The list of journal entries.
    */
-  static async getJournalEntriesByUser(userId) {
-    const entries = await dbClient.db.collection('journal_entries').find({ author_id: new ObjectID(userId) }).toArray();
+  static async getJournalEntriesByUser(userId, page, limit) {
+    const skip = (page - 1) * limit;
+    const entries = await dbClient.db.collection('journal_entries')
+      .find({ author_id: new ObjectID(userId) })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
     return entries;
   }
 
@@ -122,8 +127,13 @@ class JournalEntry {
    * Retrieve all journal entries with a public visibility setting.
    * @returns {Promise<Array>} The list of public journal entries.
    */
-  static async getPublicJournalEntries() {
-    const entries = await dbClient.db.collection('journal_entries').find({ isPublic: true }).toArray();
+  static async getPublicJournalEntries(page, limit) {
+    const skip = (page - 1) * limit;
+    const entries = await dbClient.db.collection('journal_entries')
+      .find({ isPublic: true })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
     return entries;
   }
 
