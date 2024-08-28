@@ -10,6 +10,9 @@ import {
   updateUserPassword,
 } from '../controllers/userController';
 import JournalEntryController from '../controllers/journalEntryController';
+import {
+  
+}
 
 const Journal = JournalEntryController; // Alias for JournalEntryController
 

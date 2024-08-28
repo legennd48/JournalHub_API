@@ -152,7 +152,7 @@ JournalHub currently applies rate limiting only to password reset requests. This
 ### Password Reset Request Limits
 Users are limited to a certain number of password reset requests within a given time frame. This is designed to prevent automated attacks and reduce the risk of account compromise.
 
-### Rate Limit: [Specify the exact number if known, e.g., "5 requests per hour"].
+### Rate Limit: [5 requests per hour].
 
 No other rate limiting is applied across the API at this time. This may change in future updates to ensure the continued stability and security of the application.
 
@@ -384,7 +384,7 @@ Response:
 curl -X POST http://localhost:5000/api/auth/request-password-reset \
 -H "Content-Type: application/json" \
 -d '{
-  "email": "legennd48@gmail.com"
+  "email": "Johnney_Q48@gmail.com"
 }'
 ```
 
@@ -438,7 +438,7 @@ This example section provides a comprehensive overview of how to interact with t
 
 
 ### Code Samples
-Include sample code snippets for integrating the API with different programming languages or tools.
+Code samples to be included.
 
 ## Changelog
 
