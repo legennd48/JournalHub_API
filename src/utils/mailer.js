@@ -16,7 +16,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
   async function sendWelcomeMail(email) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Welcome to JournalHub',
         html: `
@@ -33,17 +33,17 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
     }
   }
 
-  async function sendPasswordResetMail(email, token) {
+  async function sendPasswordResetMail(email, resetUrl) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Password Reset Request',
         html: `
           <h1>Password Reset Request</h1>
           <p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>
           <p>Please click on the following link, or paste this into your browser to complete the process:</p>
-          <a href="http://localhost:3000/reset/${token}">Reset Password</a>
+          <a href=${resetUrl}>Reset Password</a>
           <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
         `,
       };
@@ -58,7 +58,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
   async function sendPasswordChangedMail(email) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Password Changed',
         html: `
@@ -77,7 +77,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
   async function sendAccountDeletedMail(email) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Account Deleted',
         html: `
@@ -93,10 +93,10 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
     }
   }
 
-  async function sendprofileUpdatedMail(email) {
+  async function sendProfileUpdatedMail(email) {
     try {
       const mailOptions = {
-        from: process.env.EMAIL,
+        from: `JournalHub <process.env.EMAIL>`,
         to: email,
         subject: 'Profile Updated',
         html: `
@@ -112,4 +112,10 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
     }
   }
   
-  export { sendWelcomeMail };
+  export {
+    sendWelcomeMail,
+    sendPasswordResetMail,
+    sendPasswordChangedMail,
+    sendAccountDeletedMail,
+    sendProfileUpdatedMail,
+  };

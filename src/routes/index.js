@@ -29,6 +29,8 @@ router.get('/api/user/:id/journal-entries', (req, res) => AppController.getUserE
 router.post('/api/user/register', registerUser); // Register a new user
 router.post('/api/user/login', AuthController.login); // Handle user login
 router.post('/api/user/logout', authenticate, AuthController.logout); // Handle user logout
+router.post('/api/auth/request-password-reset', AuthController.requestPasswordReset); // Handle password reset request
+router.post('/api/auth/reset-password', AuthController.resetPassword); // Handle password reset
 
 // Journal Entries
 router.get('/api/public/journal-entries', Journal.getPublicJournalEntries); // Get all public journal entries

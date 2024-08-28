@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import dbClient from './db';
+require('dotenv').config();
 
-const SECRET_KEY = process.env.SECRET_KEY || 'This Is A Secret'; // remember to remove default value
+const SECRET_KEY = process.env.SECRET_KEY;
 
 // Function to ensure TTL index is created, this should only run once
 const ensureTTLIndex = async () => {
@@ -121,16 +122,14 @@ export const extractTokenExpiration = (token) => {
 }
 
 /**
- * Extract the user Id from a JWT token extrcted from the req header.
+ * Generate password reset token
  * @function
- * @param {string} token - The token to extract the user ID from.
- * @returns {string|null} The extracted user ID if present, otherwise null.
+ * @param {string} email - The user's email address.
+ * @returns {string} The generated password reset token.
  */
-// export const extractUserId = (token) => {
-//     if (verifyToken(token)) {
-//         const decoded = jwt.decode(token);
-//         console.log('Decoded token:', decoded.userId); // debug line, remember to remove
-//         return decoded ? decoded.userId : null;
-//     }
-//     return null;
-// }
+export const generatePasswordResetToken = (email, userId) => {
+    const token = jwt.sign({ email, userId }, SECRET_KEY, { expiresIn: '1h' });
+    console.log('Password reset token generated:', token); // debug line, remember to remove
+    return token;
+}
+
