@@ -16,7 +16,8 @@ import { validateRequest } from '../middleware/validation';
 import {
   userRegistrationSchema,
   userLoginSchema,
-  userUpdateSchema
+  userUpdateSchema,
+  passwordUpdateSchema
 } from '../schemas/user';
 import { journalEntrySchema, journalEntryUpdateSchema} from '../schemas/journalEntry';
 
@@ -42,24 +43,24 @@ router.get('/api/user/:id/journal-entries', AppController.getUserEntries);
 
 // User Registration & Authentication
 router.post('/api/user/register', validateRequest(userRegistrationSchema), registerUser); // Register a new user
-router.post('/api/user/login', AuthController.login); // Handle user login
+router.post('/api/user/login', validateRequest(userLoginSchema), AuthController.login); // Handle user login
 router.post('/api/user/logout', authenticate, AuthController.logout); // Handle user logout
 router.post('/api/auth/request-password-reset', AuthController.requestPasswordReset); // Handle password reset request
 router.post('/api/auth/reset-password', AuthController.resetPassword); // Handle password reset
 
 // Journal Entries
 router.get('/api/public/journal-entries', Journal.getPublicJournalEntries); // Get all public journal entries
-router.post('/api/journal-entries', authenticate, Journal.createJournalEntry); // Create a new journal entry
+router.post('/api/journal-entries', authenticate, validateRequest(journalEntrySchema), Journal.createJournalEntry); // Create a new journal entry
 router.get('/api/journal-entries/user/', authenticate, Journal.getJournalEntriesByUser); // Get all journal entries by user ID
 router.get('/api/journal-entries/:id', authenticate, Journal.getJournalEntryById); // Get a journal entry by ID
-router.put('/api/journal-entries/:id', authenticate, Journal.updateJournalEntry); // Update a journal entry by ID
+router.put('/api/journal-entries/:id', authenticate, validateRequest(journalEntryUpdateSchema), Journal.updateJournalEntry); // Update a journal entry by ID
 router.delete('/api/journal-entries/:id', authenticate, Journal.deleteJournalEntry); // Delete a journal entry by ID
 router.get('/api/search/journal-entries', authenticate, Journal.searchJournalEntries); // Search journal entries
 
 // User Profile Management
 router.get('/api/user/profile/', authenticate, getUserProfile); // Get user profile (requires authentication)
-router.put('/api/user/profile/', authenticate, updateUserProfile); // Update user profile (requires authentication)
+router.put('/api/user/profile/', authenticate, validateRequest(userUpdateSchema), updateUserProfile); // Update user profile (requires authentication)
 router.delete('/api/user/profile/', authenticate, deleteUserAccount); // Delete user account (requires authentication)
-router.put('/api/user/profile/password', authenticate, updateUserPassword); // Update user password (requires authentication)
+router.put('/api/user/profile/password', authenticate, validateRequest(passwordUpdateSchema), updateUserPassword); // Update user password (requires authentication)
 
 export default router;

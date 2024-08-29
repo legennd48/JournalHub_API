@@ -10,7 +10,6 @@ import {
  */
 export const validateRequest = (schema, property = 'body') => {
   return (req, res, next) => {
-    console.log(`request object: ${JSON.stringify(req.body)}`);
     const { error } = schema.validate(req[property]);
     if (error) {
       return res.status(HTTP_STATUS_BAD_REQUEST).json({ error: error.details[0].message });

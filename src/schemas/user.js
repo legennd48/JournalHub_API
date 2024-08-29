@@ -5,7 +5,11 @@ export const userRegistrationSchema = Joi.object({
   fullName: Joi.string().min(3).max(50).required(),
   nickname: Joi.string().min(3).max(20).required(),
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
+  password: Joi.string().min(8).required()
+  .regex(/^(?=.*[a-z])(?=.*[A-Z0-9])[a-zA-Z0-9\s!@#$%^&*()_+=-{};:"<>,./?]{8,}$/, {
+    name: 'password',
+    invert: false
+  })
 });
 
 // Purpose: Define the schema for user login.
@@ -23,7 +27,11 @@ export const userUpdateSchema = Joi.object({
 });
 
 // Purpose: Define the schema for password reset and update.
-export const passwordSchema = Joi.object({
+export const passwordUpdateSchema = Joi.object({
   password: Joi.string().min(6).required(),
-  newPassword: Joi.string().min(6).required(),
+  newPassword: Joi.string().min(8).required()
+  .regex(/^(?=.*[a-z])(?=.*[A-Z0-9])[a-zA-Z0-9\s!@#$%^&*()_+=-{};:"<>,./?]{8,}$/, {
+    name: 'password',
+    invert: false
+  }),
 });
