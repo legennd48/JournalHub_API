@@ -10,9 +10,15 @@ import {
   updateUserPassword,
 } from '../controllers/userController';
 import JournalEntryController from '../controllers/journalEntryController';
+import { requestLogger } from '../middleware/logger';
+import { requestRateLimiter } from '../middleware/rateLimit';
+import { validateRequest } from '../middleware/validation';
 import {
-  
-}
+  userRegistrationSchema,
+  userLoginSchema,
+  userUpdateSchema
+} from '../schemas/user';
+import { journalEntrySchema, journalEntryUpdateSchema} from '../schemas/journalEntry';
 
 const Journal = JournalEntryController; // Alias for JournalEntryController
 
@@ -23,13 +29,19 @@ const router = express.Router();
  * @description Defines the API routes for the application.
  */
 
+// apply logger middleware to all routes
+router.use(requestLogger);
+
+// apply rate limiter middleware to all routes
+router.use(requestRateLimiter);
+
 // API Status and Statistics
 router.get('/api/status', AppController.getStatus); // Check application status
-router.get('/api/stats', (req, res) => AppController.getStats(req, res));
-router.get('/api/user/:id/journal-entries', (req, res) => AppController.getUserEntries(req, res));
+router.get('/api/stats', AppController.getStats);
+router.get('/api/user/:id/journal-entries', AppController.getUserEntries);
 
 // User Registration & Authentication
-router.post('/api/user/register', registerUser); // Register a new user
+router.post('/api/user/register', validateRequest(userRegistrationSchema), registerUser); // Register a new user
 router.post('/api/user/login', AuthController.login); // Handle user login
 router.post('/api/user/logout', authenticate, AuthController.logout); // Handle user logout
 router.post('/api/auth/request-password-reset', AuthController.requestPasswordReset); // Handle password reset request

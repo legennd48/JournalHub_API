@@ -4,13 +4,19 @@ import routes from './routes/index';
 import dbClient from './utils/db';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+// import { requestLogger } from './middleware/logger';
+import { requestRateLimiter } from './middleware/rateLimit';
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Initialize the Express app
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
+if (!port) {
+  console.error('PORT environment variable is not set');
+  process.exit(1);
+}
 
 // Configure CORS
 const corsOptions = {
@@ -23,6 +29,12 @@ app.use(cors(corsOptions)); // Use CORS middleware
 // Middleware to parse JSON
 app.use(express.json());
 app.use(bodyParser.json());
+
+// Middleware to log all requests
+// app.use(requestLogger);
+
+// Middleware to rate limit requests
+// app.use(requestRateLimiter);
 
 // Route handling
 app.use('/', routes);

@@ -1,15 +1,16 @@
 import Joi from 'joi';
 import {
     HTTP_STATUS_BAD_REQUEST
-} from '../utils/httpStatusCodes';
+} from '../httpStatusCodes';
 
 /**
  * Middleware to validate incoming requests using Joi schema.
  * @param {Object} schema - Joi validation schema for the request.
  * @param {string} property - Property of request to validate (e.g., 'body', 'query', 'params').
  */
-export const validateRequest = (schema, property) => {
+export const validateRequest = (schema, property = 'body') => {
   return (req, res, next) => {
+    console.log(`request object: ${JSON.stringify(req.body)}`);
     const { error } = schema.validate(req[property]);
     if (error) {
       return res.status(HTTP_STATUS_BAD_REQUEST).json({ error: error.details[0].message });

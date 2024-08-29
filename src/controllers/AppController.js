@@ -1,4 +1,5 @@
 import dbClient from '../utils/db';
+import { ObjectId } from 'mongodb';
 import {
   HTTP_STATUS_OK,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
@@ -42,7 +43,9 @@ class AppController {
   async getUserEntries(req, res) {
     try {
       const user_id = req.params.id;
-      const userEntries = await dbClient.allUserEntries(user_id);
+      const userEntries = await dbClient.db
+        .collection('journal_entries')
+        .countDocuments({ author_id: ObjectId(user_id) });
       res.status(HTTP_STATUS_OK).json({ userId: user_id, user_entries: userEntries });
     } catch (error) {
       res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'An error occurred while fetching user entries.' });
