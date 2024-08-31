@@ -10,14 +10,24 @@ import {
   HTTP_STATUS_UNAUTHORIZED,
   HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
-} from '../httpStatusCodes';
+} from '../constants/httpStatusCodes';
+import dotenv from 'dotenv';
+dotenv.config();
 
 
-const saltRounds = 10; // Number of salt rounds for bcrypt hashing
+const saltRounds = parseInt(process.env.SALT_ROUNDS);
+if (!saltRounds) {
+  throw new Error('SALT_ROUNDS environment variable is not set');
+}
 
-// Controller function to register a new user
+/**
+ * Registers a new user.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Object>} The response containing the new user ID or an error message.
+ */
 async function registerUser(req, res) {
-  const { fullName, nickname, email, password } = req.body; // Extract user's fullname, nickname, email, and password from request body
+  const { fullName, nickname, email, password } = req.body; // Extract user data from request body
   try {
     // Check if user already exists
     const existingUser = await User.findByEmail(email);
@@ -37,12 +47,16 @@ async function registerUser(req, res) {
 
     return res.status(HTTP_STATUS_CREATED).json({ userId }); // Respond with the newly created user's ID
   } catch (error) {
-    // console.error('Error registering user:', error); // Log any errors during registration
-    return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Server error' }); // Respond with a server error status
+    return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Error Registering new user' }); // Respond with a server error status
   }
 }
 
-// Controller function to fetch user profile by ID
+/**
+ * Fetches a user profile by ID.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Object>} The response containing the user profile or an error message.
+ */
 async function getUserProfile(req, res) {
   const userId = req.user.userId; // Extract userId from authenticated user
   try {
@@ -58,11 +72,15 @@ async function getUserProfile(req, res) {
   }
 }
 
-// Controller function to update user profile by ID
+/**
+ * Updates a user profile by ID.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Object>} The response indicating success or an error message.
+ */
 async function updateUserProfile(req, res) {
   const userId = req.user.userId; // Extract userId from authenticated user
   const newData = req.body; // Extract updated data from request body
-  console.log(userId, newData);
   try {
     const updated = await User.update(userId, newData); // Update user data in the database
     if (!updated) {
@@ -72,12 +90,16 @@ async function updateUserProfile(req, res) {
 
     return res.status(HTTP_STATUS_OK).json({ message: 'User profile updated successfully' }); // Respond with success message
   } catch (error) {
-    console.error('Error updating user profile:', error); // Log any errors during profile update
     return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Server error' }); // Respond with a server error status
   }
 }
 
-// Controller function to delete user account by ID
+/**
+ * Deletes a user account by ID.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Object>} The response indicating success or an error message.
+ */
 async function deleteUserAccount(req, res) {
   const userId = req.user.userId; // Extract userId from authenticated user
   const email = req.user.email;
@@ -100,11 +122,16 @@ async function deleteUserAccount(req, res) {
 
     return res.status(HTTP_STATUS_OK).json({ message: 'User account deleted successfully' }); // Respond with success message
   } catch (error) {
-    // console.error('Error deleting user account:', error); // Log any errors during account deletion
     return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Server error' }); // Respond with a server error status
   }
 }
 
+/**
+ * Updates a user's password.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Object>} The response indicating success or an error message.
+ */
 async function updateUserPassword(req, res) {
   const userId = req.user.userId;
   const { password, newPassword } = req.body;
@@ -127,7 +154,6 @@ async function updateUserPassword(req, res) {
     return res.status(HTTP_STATUS_OK).json({ message: 'Password updated successfully' });
 
   } catch (error) {
-    // console.error('Error updating user password:', error);
     return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Server error' });
   }
 }

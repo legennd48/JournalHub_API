@@ -4,17 +4,18 @@ import routes from './routes/index';
 import dbClient from './utils/db';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+import { logger } from './middleware/logger';
 // import { requestLogger } from './middleware/logger';
-import { requestRateLimiter } from './middleware/rateLimit';
+// import { requestRateLimiter } from './middleware/rateLimit';
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Initialize the Express app
 const app = express();
-const port = process.env.PORT;
+const port = process.env.POR;
 if (!port) {
-  console.error('PORT environment variable is not set');
+  logger.info('PORT environment variable is not set');
   process.exit(1);
 }
 
@@ -42,6 +43,6 @@ app.use('/', routes);
 // Start the server once the database is connected
 dbClient.on('connected', () => {
   app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    logger.info(`Server is running on http://localhost:${port}`);
   });
 });

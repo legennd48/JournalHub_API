@@ -10,7 +10,7 @@ import {
     HTTP_STATUS_UNAUTHORIZED,
     HTTP_STATUS_NOT_FOUND,
     HTTP_STATUS_TOO_MANY_REQUESTS,
-} from '../httpStatusCodes';
+} from '../constants/httpStatusCodes';
 import {
     generateToken,
     blacklistToken,
@@ -19,9 +19,16 @@ import {
     verifyToken,
     generatePasswordResetToken
 } from '../utils/jwt';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
-const saltRounds = 10;
+const saltRounds = parseInt(process.env.SALT_ROUNDS);
+if (!saltRounds) {
+    throw new Error('SALT_ROUNDS environment variable is not set');
+}
+
 const rateLimiter = new RateLimiterMemory({
     points: 5,
     duration: 60 * 15,
@@ -59,14 +66,10 @@ class AuthController {
             }
 
             // Generate a JWT token for the user
-            // eslint-disable-next-line no-underscore-dangle
             const token = generateToken(user._id.toString(), user.nickname, user.fullName, user.email);
             // Send the token and user ID as a response
-            // eslint-disable-next-line no-underscore-dangle
             return res.status(HTTP_STATUS_OK).json({ token });
         } catch (error) {
-            // If there's an error, log it and send a 500 response
-            console.error(error);
             return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
         }
     }
@@ -97,7 +100,6 @@ class AuthController {
             return res.status(HTTP_STATUS_OK).json({ message: 'Logout successful' });
         } catch (error) {
             // If there's an error, log it and send a 500 response
-            // console.error(error);
             return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
         }
     }
@@ -127,7 +129,7 @@ class AuthController {
             const token = generatePasswordResetToken(email, user._id);
             // Construct the password reset URL
             const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset-password?token=${token}`;
-            console.log(resetUrl); // debug line, remember to remove
+
             // Send the token to user email
             sendPasswordResetMail(email, resetUrl);
             return res.status(HTTP_STATUS_OK).json({ message: 'Password reset email sent' });
@@ -135,8 +137,6 @@ class AuthController {
             if (error instanceof Error && error.name === 'RateLimiterRes') {
                 return res.status(HTTP_STATUS_TOO_MANY_REQUESTS).json({ message: 'Too many requests. Please try again later.' });
             }
-            // If there's an error, log it and send a 500 response
-            console.error(error);
             return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
         }
     }
@@ -152,13 +152,11 @@ class AuthController {
      */
     async resetPassword(req, res) {
         const { token } = req.query;
-        console.log(token);
         const { password } = req.body;
 
         try {
             // verify the token
             const result = await verifyToken(token);
-            
             if (!result) {
                 // If the token is invalid, send a 400 response
                 return res.status(HTTP_STATUS_BAD_REQUEST).json({ message: 'Invalid reset token' });
@@ -169,7 +167,7 @@ class AuthController {
                 return res.status(HTTP_STATUS_NOT_FOUND).json({ message: 'User not found' });
             }
             // Hash the new password
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
             // Update the user's password
             await dbClient.db.collection('users').updateOne({ email: user.email }, { $set: { password: hashedPassword } });
             // Send a success email
@@ -179,8 +177,7 @@ class AuthController {
             // Send a success response
             return res.status(HTTP_STATUS_OK).json({ message: 'Password reset successful' });
         } catch (error) {
-            // If there's an error, log it and send a 500 response
-            // console.error(error); // log error to file in production
+            // If there's an error send a 500 response
             return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
         }
     }

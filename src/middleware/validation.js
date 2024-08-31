@@ -1,7 +1,6 @@
-import Joi from 'joi';
 import {
     HTTP_STATUS_BAD_REQUEST
-} from '../httpStatusCodes';
+} from '../constants/httpStatusCodes';
 
 /**
  * Middleware to validate incoming requests using Joi schema.

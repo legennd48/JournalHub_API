@@ -7,7 +7,7 @@ import {
   HTTP_STATUS_UNAUTHORIZED,
   HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
-} from '../httpStatusCodes';
+} from '../constants/httpStatusCodes';
 
 const J = JournalEntry; // Alias for JournalEntry model
 
