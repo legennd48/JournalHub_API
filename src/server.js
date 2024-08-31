@@ -5,18 +5,18 @@ import dbClient from './utils/db';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import { logger } from './middleware/logger';
-// import { requestLogger } from './middleware/logger';
-// import { requestRateLimiter } from './middleware/rateLimit';
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Initialize the Express app
 const app = express();
-const port = process.env.POR;
+
+const port = process.env.PORT;
+
 if (!port) {
-  logger.info('PORT environment variable is not set');
-  process.exit(1);
+  logger.error('PORT environment variable is not set');
+  setTimeout(() => process.exit(1), 100);
 }
 
 // Configure CORS

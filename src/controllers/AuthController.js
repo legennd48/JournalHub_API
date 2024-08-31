@@ -20,9 +20,9 @@ import {
     generatePasswordResetToken
 } from '../utils/jwt';
 import dotenv from 'dotenv';
+import { logger } from '../middleware/logger';
 
 dotenv.config();
-
 
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
 if (!saltRounds) {
@@ -54,22 +54,25 @@ class AuthController {
             // Find the user in the database by email
             const user = await dbClient.db.collection('users').findOne({ email });
             if (!user) {
-                // If user is not found, send a 404 response
+                logger.info(`Login failed: User not found (email: ${email})`, { statusCode: HTTP_STATUS_NOT_FOUND });
                 return res.status(HTTP_STATUS_NOT_FOUND).json({ message: 'User not found' });
             }
 
             // Compare provided password with the stored hashed password
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
-                // If password is invalid, send a 400 response
+                logger.info(`Login failed: Invalid credentials (email: ${email})`, { statusCode: HTTP_STATUS_BAD_REQUEST });
                 return res.status(HTTP_STATUS_BAD_REQUEST).json({ message: 'Invalid credentials' });
             }
 
             // Generate a JWT token for the user
             const token = generateToken(user._id.toString(), user.nickname, user.fullName, user.email);
+            logger.info(`User login successful (email: ${email})`, { statusCode: HTTP_STATUS_OK });
+
             // Send the token and user ID as a response
             return res.status(HTTP_STATUS_OK).json({ token });
         } catch (error) {
+            logger.error(`Login error: ${error.message}`, { statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR });
             return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
         }
     }
@@ -83,23 +86,23 @@ class AuthController {
      * @returns {Promise<void>}
      */
     async logout(req, res) {
-        // Extract the token from the header
         const token = extractToken(req.headers);
         if (!token) {
-            // If the header is missing or doesn't start with 'Bearer ', send a 401 response
+            logger.info('Logout failed: Missing or invalid Authorization header', { statusCode: HTTP_STATUS_UNAUTHORIZED });
             return res.status(HTTP_STATUS_UNAUTHORIZED).send({ message: 'Missing or invalid Authorization header' });
         }
         try {
             const expirationDate = await extractTokenExpiration(token);
             if (!expirationDate) {
-                // If the token is invalid, send a 400 response
+                logger.info('Logout failed: Invalid token', { statusCode: HTTP_STATUS_BAD_REQUEST });
                 return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Token' });
             }
             await blacklistToken(token, expirationDate);
-            // Send a success response
+            logger.info('User logout successful', { statusCode: HTTP_STATUS_OK });
+
             return res.status(HTTP_STATUS_OK).json({ message: 'Logout successful' });
         } catch (error) {
-            // If there's an error, log it and send a 500 response
+            logger.error(`Logout error: ${error.message}`, { statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR });
             return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
         }
     }
@@ -118,29 +121,27 @@ class AuthController {
 
         try {
             await rateLimiter.consume(ip);
-            // Find the user in the database by email
             const user = await dbClient.db.collection('users').findOne({ email });
             if (!user) {
-                // If user is not found, send a 404 response
+                logger.info(`Password reset request failed: User not found (email: ${email})`, { statusCode: HTTP_STATUS_NOT_FOUND });
                 return res.status(HTTP_STATUS_NOT_FOUND).json({ message: 'User not found' });
             }
 
-            // Generate a password reset token for the user
             const token = generatePasswordResetToken(email, user._id);
-            // Construct the password reset URL
             const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset-password?token=${token}`;
 
-            // Send the token to user email
             sendPasswordResetMail(email, resetUrl);
+            logger.info(`Password reset email sent (email: ${email})`, { statusCode: HTTP_STATUS_OK });
             return res.status(HTTP_STATUS_OK).json({ message: 'Password reset email sent' });
         } catch (error) {
             if (error instanceof Error && error.name === 'RateLimiterRes') {
+                logger.info(`Password reset request rate limited (IP: ${ip})`, { statusCode: HTTP_STATUS_TOO_MANY_REQUESTS });
                 return res.status(HTTP_STATUS_TOO_MANY_REQUESTS).json({ message: 'Too many requests. Please try again later.' });
             }
+            logger.error(`Password reset request error: ${error.message}`, { statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR });
             return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
         }
     }
-
 
     /**
      * Handles user password reset.
@@ -155,29 +156,27 @@ class AuthController {
         const { password } = req.body;
 
         try {
-            // verify the token
             const result = await verifyToken(token);
             if (!result) {
-                // If the token is invalid, send a 400 response
+                logger.info('Password reset failed: Invalid reset token', { statusCode: HTTP_STATUS_BAD_REQUEST });
                 return res.status(HTTP_STATUS_BAD_REQUEST).json({ message: 'Invalid reset token' });
             }
             const user = await User.findById(result.userId);
             if (!user) {
-                // If user is not found, send a 404 response
+                logger.info(`Password reset failed: User not found (userId: ${result.userId})`, { statusCode: HTTP_STATUS_NOT_FOUND });
                 return res.status(HTTP_STATUS_NOT_FOUND).json({ message: 'User not found' });
             }
-            // Hash the new password
+
             const hashedPassword = await bcrypt.hash(password, saltRounds);
-            // Update the user's password
             await dbClient.db.collection('users').updateOne({ email: user.email }, { $set: { password: hashedPassword } });
-            // Send a success email
+
             sendPasswordChangedMail(user.email);
-            // Blacklist the token
+            logger.info(`Password reset successful (email: ${user.email})`, { statusCode: HTTP_STATUS_OK });
+
             await blacklistToken(token, new Date(result.exp * 1000));
-            // Send a success response
             return res.status(HTTP_STATUS_OK).json({ message: 'Password reset successful' });
         } catch (error) {
-            // If there's an error send a 500 response
+            logger.error(`Password reset error: ${error.message}`, { statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR });
             return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
         }
     }

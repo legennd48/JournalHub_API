@@ -12,8 +12,8 @@ import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
 } from '../constants/httpStatusCodes';
 import dotenv from 'dotenv';
+import { logger } from '../middleware/logger'; // Import the logger
 dotenv.config();
-
 
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
 if (!saltRounds) {
@@ -32,6 +32,7 @@ async function registerUser(req, res) {
     // Check if user already exists
     const existingUser = await User.findByEmail(email);
     if (existingUser) {
+      logger.info(`Registration failed: User already exists (email: ${email})`, { statusCode: HTTP_STATUS_BAD_REQUEST });
       return res.status(HTTP_STATUS_BAD_REQUEST).json({ error: 'User already exists' });
     }
 
@@ -44,9 +45,11 @@ async function registerUser(req, res) {
 
     // Send welcome email
     await sendWelcomeMail(email);
+    logger.info(`New user registered successfully (userId: ${userId}, email: ${email})`, { statusCode: HTTP_STATUS_CREATED });
 
     return res.status(HTTP_STATUS_CREATED).json({ userId }); // Respond with the newly created user's ID
   } catch (error) {
+    logger.error(`Registration error: ${error.message}`, { statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR });
     return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Error Registering new user' }); // Respond with a server error status
   }
 }
@@ -62,12 +65,14 @@ async function getUserProfile(req, res) {
   try {
     const user = await User.findById(userId); // Find user by ID in the database
     if (!user) {
+      logger.info(`User profile fetch failed: User not found (userId: ${userId})`, { statusCode: HTTP_STATUS_NOT_FOUND });
       return res.status(HTTP_STATUS_NOT_FOUND).json({ error: 'User not found' });
     }
 
+    logger.info(`User profile fetched successfully (userId: ${userId})`, { statusCode: HTTP_STATUS_OK });
     return res.status(HTTP_STATUS_OK).json({ user }); // Respond with the fetched user profile
   } catch (error) {
-    // console.error('Error fetching user profile:', error); // Log any errors during profile fetch
+    logger.error(`Error fetching user profile: ${error.message}`, { statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR });
     return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Server error' }); // Respond with a server error status
   }
 }
@@ -84,12 +89,15 @@ async function updateUserProfile(req, res) {
   try {
     const updated = await User.update(userId, newData); // Update user data in the database
     if (!updated) {
+      logger.info(`User profile update failed: User not found or no changes applied (userId: ${userId})`, { statusCode: HTTP_STATUS_NOT_FOUND });
       return res.status(HTTP_STATUS_NOT_FOUND).json({ error: 'User not found or no changes applied' });
     }
     sendProfileUpdatedMail((newData.email) ? newData.email : req.user.email); // Send profile updated email
+    logger.info(`User profile updated successfully (userId: ${userId})`, { statusCode: HTTP_STATUS_OK });
 
     return res.status(HTTP_STATUS_OK).json({ message: 'User profile updated successfully' }); // Respond with success message
   } catch (error) {
+    logger.error(`User profile update error: ${error.message}`, { statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR });
     return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Server error' }); // Respond with a server error status
   }
 }
@@ -108,6 +116,7 @@ async function deleteUserAccount(req, res) {
     // Use the JournalEntry class to delete journal entries
     const stat = await JournalEntry.deleteJournalEntriesByUser(userId); // delete all users journal entries
     if (!stat) {
+      logger.info(`Delete user account failed: User not found or no journal entries to delete (userId: ${userId})`, { statusCode: HTTP_STATUS_NOT_FOUND });
       return res.status(HTTP_STATUS_NOT_FOUND).json({ error: 'User not found or no journal entries to delete' });
     }
     await User.delete(userId); // Delete user from the database
@@ -115,13 +124,16 @@ async function deleteUserAccount(req, res) {
     const expirationDate = await extractTokenExpiration(token); // Extract token expiration date
 
     if (!expirationDate) {
+      logger.info('Delete user account failed: Invalid token', { statusCode: HTTP_STATUS_BAD_REQUEST });
       return res.status(HTTP_STATUS_BAD_REQUEST).send({ error: 'Invalid Token' });
     }
     await blacklistToken(token, expirationDate); // Blacklist the token used for authentication
     sendAccountDeletedMail(email);
+    logger.info(`User account deleted successfully (userId: ${userId})`, { statusCode: HTTP_STATUS_OK });
 
     return res.status(HTTP_STATUS_OK).json({ message: 'User account deleted successfully' }); // Respond with success message
   } catch (error) {
+    logger.error(`Delete user account error: ${error.message}`, { statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR });
     return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Server error' }); // Respond with a server error status
   }
 }
@@ -138,11 +150,13 @@ async function updateUserPassword(req, res) {
   try {
     const user = await User.findById(userId);
     if (!user) {
+      logger.info(`Update password failed: User not found (userId: ${userId})`, { statusCode: HTTP_STATUS_NOT_FOUND });
       return res.status(HTTP_STATUS_NOT_FOUND).json({ error: 'User not found' });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      logger.info(`Update password failed: Invalid password (userId: ${userId})`, { statusCode: HTTP_STATUS_UNAUTHORIZED });
       return res.status(HTTP_STATUS_UNAUTHORIZED).json({ error: 'Invalid password' });
     }
 
@@ -150,10 +164,12 @@ async function updateUserPassword(req, res) {
 
     await User.update(userId, { password: hashedPassword });
     sendPasswordChangedMail(user.email);
+    logger.info(`User password updated successfully (userId: ${userId})`, { statusCode: HTTP_STATUS_OK });
 
     return res.status(HTTP_STATUS_OK).json({ message: 'Password updated successfully' });
 
   } catch (error) {
+    logger.error(`Update password error: ${error.message}`, { statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR });
     return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({ error: 'Server error' });
   }
 }

@@ -2,7 +2,7 @@
 import { MongoClient, ObjectID } from 'mongodb';
 import EventEmitter from 'events';
 import dotenv from 'dotenv';
-
+import { logger } from '../middleware/logger';
 dotenv.config();
 
 const { MONGO_URI } = process.env; // Url to be set in .env file
@@ -17,6 +17,7 @@ class DBClient extends EventEmitter {
         this.emit('connected');
       })
       .catch((err) => {
+        logger.error('Error connecting to MongoDB:', err);
         this.emit('error', err);
       });
   }
@@ -26,9 +27,9 @@ class DBClient extends EventEmitter {
   }
 
   /**
- * Retrieves the number of users in the database.
- * @returns {Promise<Number>} A promise that resolves to the total number of users.
- */
+   * Retrieves the number of users in the database.
+   * @returns {Promise<Number>} A promise that resolves to the total number of users.
+   */
   async allUsers() {
     try {
       const count = await this.client.db()
@@ -36,14 +37,15 @@ class DBClient extends EventEmitter {
         .countDocuments();
       return count;
     } catch (error) {
+      logger.error('Error fetching user count:', error);
       throw new Error('Error fetching user count:', error);
     }
   }
 
   /**
- * Retrieves the total number of entries in the database.
- * @returns {Promise<Number>} A promise that resolves to the total number of entries.
- */
+   * Retrieves the total number of entries in the database.
+   * @returns {Promise<Number>} A promise that resolves to the total number of entries.
+   */
   async allEntries() {
     try {
       const count = await this.client.db()
@@ -51,15 +53,16 @@ class DBClient extends EventEmitter {
         .countDocuments();
       return count;
     } catch (error) {
+      logger.error('Error fetching entry count:', error);
       throw new Error('Error fetching entry count:', error);
     }
   }
 
   /**
- * Retrieves the total number of entries belonging to a specific user.
- * @param {string} userId The ID of the user whose entries to count.
- * @returns {Promise<number>} A promise that resolves to the total number of entries.
- */
+   * Retrieves the total number of entries belonging to a specific user.
+   * @param {string} userId The ID of the user whose entries to count.
+   * @returns {Promise<number>} A promise that resolves to the total number of entries.
+   */
   async allUserEntries(userId) {
     try {
       const count = await this.client.db()
@@ -67,6 +70,7 @@ class DBClient extends EventEmitter {
         .countDocuments({ authorId: ObjectID(userId) });
       return count;
     } catch (error) {
+      logger.error('Error fetching user entry count:', error);
       throw new Error('Error fetching user entry count:', error);
     }
   }
@@ -78,6 +82,7 @@ class DBClient extends EventEmitter {
 
 const dbClient = new DBClient();
 dbClient.on('error', (err) => {
+  logger.error('Something Went Wrong With MongoDb Connection:', err);
   throw new Error('Something Went Wrong With MongoDb Connection:', err);
 });
 
