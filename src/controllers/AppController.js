@@ -15,7 +15,8 @@ class AppController {
  */
 getStatus(req, res) {
   const data = {
-    db: dbClient.isAlive(),
+    MongoDB: dbClient.isAlive() ? 'is Live' : 'Dead',
+    JourlaHub: 'OK',
   };
   logger.info(`Status retrieved successfully. Status code: ${HTTP_STATUS_OK}`);
   res.status(HTTP_STATUS_OK).json(data);
