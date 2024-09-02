@@ -1,65 +1,64 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
 import bcrypt from 'bcrypt';
-import User from '../models/User';
+import User from '../src/models/User';
 import {
   registerUser, 
   getUserProfile,
   updateUserProfile,
-  deleteUserAccount } from '../controllers/userController';
+  deleteUserAccount } from '../src/controllers/userController';
 
-describe('User Controller', () => {
-  let req, res, sandbox;
-
-  beforeEach(() => {
-    sandbox = sinon.createSandbox();
-    req = { body: {}, params: {} };
-    res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.stub()
-    };
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
-  describe('registerUser', () => {
-    it('should return error if user already exists', async () => {
-      sandbox.stub(User, 'findByEmail').resolves(true);
-
-      req.body = { name: 'John Doe', email: 'john@example.com', password: 'securepassword' };
-
-      await registerUser(req, res);
-
-      expect(res.status.calledWith(400)).to.be.true;
-      expect(res.json.calledWith({ error: 'User already exists' })).to.be.true;
+  describe('User Controller', () => {
+    let req, res;
+  
+    beforeEach(() => {
+      req = { body: {}, params: {} };
+      res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
     });
-
-    it('should create a new user', async () => {
-      sandbox.stub(User, 'findByEmail').resolves(false);
-      sandbox.stub(bcrypt, 'hash').resolves('hashedpassword');
-      sandbox.stub(User.prototype, 'save').resolves('newUserId');
-
-      req.body = { name: 'John Doe', email: 'john@example.com', password: 'securepassword' };
-
-      await registerUser(req, res);
-
-      expect(res.status.calledWith(201)).to.be.true;
-      expect(res.json.calledWith({ userId: 'newUserId' })).to.be.true;
+  
+    afterEach(() => {
+      jest.clearAllMocks(); // important, i forgot this before
     });
-
-    it('should handle errors', async () => {
-      sandbox.stub(User, 'findByEmail').throws(new Error('Error'));
-
-      req.body = { name: 'John Doe', email: 'john@example.com', password: 'securepassword' };
-
-      await registerUser(req, res);
-
-      expect(res.status.calledWith(500)).to.be.true;
-      expect(res.json.calledWith({ error: 'Server error' })).to.be.true;
+  
+    describe('registerUser', () => {
+      it('should return error if user already exists', async () => {
+        jest.spyOn(User, 'findByEmail').mockResolvedValue(true);
+  
+        req.body = { name: 'John Doe', email: 'john@example.com', password: 'securepassword' };
+  
+        await registerUser(req, res);
+  
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ error: 'User already exists' });
+      });
+  
+      it('should create a new user', async () => {
+        jest.spyOn(User, 'findByEmail').mockResolvedValue(false);
+        jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedpassword');
+        jest.spyOn(User.prototype, 'save').mockResolvedValue('newUserId');
+  
+        req.body = { name: 'John Doe', email: 'john@example.com', password: 'securepassword' };
+  
+        await registerUser(req, res);
+  
+        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.json).toHaveBeenCalledWith({ userId: 'newUserId' });
+      });
+  
+      it('should handle errors', async () => {
+        jest.spyOn(User, 'findByEmail').mockImplementation(() => {
+          throw new Error('Error');
+        });
+  
+        req.body = { name: 'John Doe', email: 'john@example.com', password: 'securepassword' };
+  
+        await registerUser(req, res);
+  
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Server error' });
+      });
     });
-  });
 
   describe('getUserProfile', () => {
     it('should return user profile', async () => {
