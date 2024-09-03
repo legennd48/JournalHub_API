@@ -1,1 +1,20 @@
 {"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-02T21:07:59.623Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-02T23:37:23.308Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-02T23:49:10.261Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-02T23:49:13.200Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-02T23:52:19.056Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-02T23:52:21.240Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-02T23:54:46.681Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-02T23:54:46.681Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-02T23:54:49.208Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:05:35.578Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:05:35.578Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:05:37.841Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:07:34.754Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:07:34.754Z"}
+{"level":"error","message":"Authentication error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:07:34.774Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:07:37.296Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:12:01.367Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:13:51.551Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:16:52.969Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:20:51.789Z"}

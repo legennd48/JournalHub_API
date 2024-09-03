@@ -41,3 +41,83 @@
 {"level":"info","message":"Authentication successful","statusCode":200,"timestamp":"2024-09-02T21:08:00.063Z"}
 {"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-02T21:08:00.064Z"}
 {"level":"info","message":"Journal entry created successfully (title: My First Journal Entry)","statusCode":201,"timestamp":"2024-09-02T21:08:00.068Z"}
+{"level":"info","message":"Registration failed: User already exists (email: john@example.com)","statusCode":400,"timestamp":"2024-09-02T23:37:20.747Z"}
+{"level":"info","message":"Status retrieved successfully. Status code: 200","timestamp":"2024-09-02T23:37:20.970Z"}
+{"level":"info","message":"Statistics retrieved successfully. Status code: 200","timestamp":"2024-09-02T23:37:21.066Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-02T23:37:21.089Z"}
+{"level":"info","message":"Registration failed: User already exists (email: johndoe@example.com)","statusCode":400,"timestamp":"2024-09-02T23:37:21.102Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-02T23:37:21.113Z"}
+{"level":"info","message":"User login successful (email: johndoe@example.com)","statusCode":200,"timestamp":"2024-09-02T23:37:21.208Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-02T23:37:21.218Z"}
+{"level":"info","message":"User login successful (email: johndoe@example.com)","statusCode":200,"timestamp":"2024-09-02T23:37:21.303Z"}
+{"level":"info","message":"Authentication successful","statusCode":200,"timestamp":"2024-09-02T23:37:21.315Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-02T23:37:21.316Z"}
+{"level":"info","message":"Journal entry created successfully (title: My First Journal Entry)","statusCode":201,"timestamp":"2024-09-02T23:37:21.352Z"}
+{"level":"info","message":"New user registered successfully (userId: newUserId, email: john@example.com)","statusCode":201,"timestamp":"2024-09-02T23:37:23.304Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-02T23:37:23.308Z"}
+{"level":"info","message":"Registration failed: User already exists (email: johndoe@example.com)","statusCode":400,"timestamp":"2024-09-02T23:49:09.971Z"}
+{"level":"info","message":"Status retrieved successfully. Status code: 200","timestamp":"2024-09-02T23:49:10.244Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-02T23:49:10.258Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-02T23:49:10.261Z"}
+{"level":"info","message":"Authentication failed: Invalid token","statusCode":401,"timestamp":"2024-09-02T23:49:10.330Z"}
+{"level":"info","message":"Statistics retrieved successfully. Status code: 200","timestamp":"2024-09-02T23:49:10.346Z"}
+{"level":"info","message":"New user registered successfully (userId: newUserId, email: john@example.com)","statusCode":201,"timestamp":"2024-09-02T23:49:13.196Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-02T23:49:13.200Z"}
+{"level":"info","message":"Registration failed: User already exists (email: johndoe@example.com)","statusCode":400,"timestamp":"2024-09-02T23:52:18.655Z"}
+{"level":"info","message":"Status retrieved successfully. Status code: 200","timestamp":"2024-09-02T23:52:19.035Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-02T23:52:19.053Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-02T23:52:19.056Z"}
+{"level":"info","message":"Authentication failed: Invalid token","statusCode":401,"timestamp":"2024-09-02T23:52:19.149Z"}
+{"level":"info","message":"Statistics retrieved successfully. Status code: 200","timestamp":"2024-09-02T23:52:19.161Z"}
+{"level":"info","message":"New user registered successfully (userId: newUserId, email: john@example.com)","statusCode":201,"timestamp":"2024-09-02T23:52:21.194Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-02T23:52:21.240Z"}
+{"level":"info","message":"Registration failed: User already exists (email: johndoe@example.com)","statusCode":400,"timestamp":"2024-09-02T23:54:46.261Z"}
+{"level":"info","message":"Status retrieved successfully. Status code: 200","timestamp":"2024-09-02T23:54:46.649Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-02T23:54:46.679Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-02T23:54:46.679Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-02T23:54:46.681Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-02T23:54:46.681Z"}
+{"level":"info","message":"Password reset request failed: User not found (email: johndoe@example.com)","statusCode":404,"timestamp":"2024-09-02T23:54:46.756Z"}
+{"level":"info","message":"Authentication failed: Invalid token","statusCode":401,"timestamp":"2024-09-02T23:54:46.758Z"}
+{"level":"info","message":"Statistics retrieved successfully. Status code: 200","timestamp":"2024-09-02T23:54:46.763Z"}
+{"level":"info","message":"New user registered successfully (userId: newUserId, email: john@example.com)","statusCode":201,"timestamp":"2024-09-02T23:54:49.174Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-02T23:54:49.208Z"}
+{"level":"info","message":"Registration failed: User already exists (email: johndoe@example.com)","statusCode":400,"timestamp":"2024-09-03T00:05:34.516Z"}
+{"level":"info","message":"Status retrieved successfully. Status code: 200","timestamp":"2024-09-03T00:05:35.566Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-03T00:05:35.569Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-03T00:05:35.569Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:05:35.578Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:05:35.578Z"}
+{"level":"info","message":"Password reset request failed: User not found (email: johndoe@example.com)","statusCode":404,"timestamp":"2024-09-03T00:05:35.749Z"}
+{"level":"info","message":"Authentication failed: Invalid token","statusCode":401,"timestamp":"2024-09-03T00:05:35.751Z"}
+{"level":"info","message":"Statistics retrieved successfully. Status code: 200","timestamp":"2024-09-03T00:05:35.758Z"}
+{"level":"info","message":"User entries retrieved successfully for user with ID: 66d212bb0ec12d0c27b00064. Status code: 200","timestamp":"2024-09-03T00:05:35.777Z"}
+{"level":"info","message":"New user registered successfully (userId: newUserId, email: john@example.com)","statusCode":201,"timestamp":"2024-09-03T00:05:37.806Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:05:37.841Z"}
+{"level":"info","message":"Server is running on http://localhost:5000","timestamp":"2024-09-03T00:06:21.473Z"}
+{"level":"info","message":"User entries retrieved successfully for user with ID: 66d212bb0ec12d0c27b00064. Status code: 200","timestamp":"2024-09-03T00:07:00.560Z"}
+{"level":"info","message":"Server is running on http://localhost:5000","timestamp":"2024-09-03T00:07:24.627Z"}
+{"level":"info","message":"Registration failed: User already exists (email: johndoe@example.com)","statusCode":400,"timestamp":"2024-09-03T00:07:33.939Z"}
+{"level":"info","message":"Status retrieved successfully. Status code: 200","timestamp":"2024-09-03T00:07:34.736Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-03T00:07:34.739Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-03T00:07:34.740Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:07:34.754Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:07:34.754Z"}
+{"level":"error","message":"Authentication error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:07:34.774Z"}
+{"level":"info","message":"Password reset request failed: User not found (email: johndoe@example.com)","statusCode":404,"timestamp":"2024-09-03T00:07:34.929Z"}
+{"level":"info","message":"Statistics retrieved successfully. Status code: 200","timestamp":"2024-09-03T00:07:34.930Z"}
+{"level":"info","message":"User entries retrieved successfully for user with ID: 66d212bb0ec12d0c27b00064. Status code: 200","timestamp":"2024-09-03T00:07:34.943Z"}
+{"level":"info","message":"New user registered successfully (userId: newUserId, email: john@example.com)","statusCode":201,"timestamp":"2024-09-03T00:07:37.277Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:07:37.296Z"}
+{"level":"info","message":"Validation successful","statusCode":200,"timestamp":"2024-09-03T00:12:01.364Z"}
+{"level":"error","message":"Login error: Cannot read properties of undefined (reading 'collection')","statusCode":500,"timestamp":"2024-09-03T00:12:01.367Z"}
+{"level":"info","message":"Password reset request failed: User not found (email: johndoe@example.com)","statusCode":404,"timestamp":"2024-09-03T00:12:01.454Z"}
+{"level":"info","message":"Registration failed: User already exists (email: johndoe@example.com)","statusCode":400,"timestamp":"2024-09-03T00:13:48.947Z"}
+{"level":"info","message":"New user registered successfully (userId: newUserId, email: john@example.com)","statusCode":201,"timestamp":"2024-09-03T00:13:51.547Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:13:51.551Z"}
+{"level":"info","message":"Registration failed: User already exists (email: johndoe@example.com)","statusCode":400,"timestamp":"2024-09-03T00:16:50.865Z"}
+{"level":"info","message":"New user registered successfully (userId: newUserId, email: john@example.com)","statusCode":201,"timestamp":"2024-09-03T00:16:52.965Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:16:52.969Z"}
+{"level":"info","message":"Registration failed: User already exists (email: johndoe@example.com)","statusCode":400,"timestamp":"2024-09-03T00:20:49.108Z"}
+{"level":"info","message":"New user registered successfully (userId: newUserId, email: john@example.com)","statusCode":201,"timestamp":"2024-09-03T00:20:51.784Z"}
+{"level":"error","message":"Registration error: Error","statusCode":500,"timestamp":"2024-09-03T00:20:51.789Z"}
