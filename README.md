@@ -1,68 +1,63 @@
-# JournalHub - (API)
+# JournalHub API
 
-**Don't lose your spark, Journal it!**
+**Empower Your Journaling with JournalHub API**
 
-JournalHub is a sophisticated web application designed to help users capture and preserve their thoughts, ideas, and experiences. It's an ideal platform for individuals who want to keep a digital journal, reflect on their daily lives, or document their creative processes.
+JournalHub API serves as the backend core for both web and mobile journaling applications. It provides essential functionalities such as user management, secure authentication, journal entry management, and more, through a set of RESTful endpoints.
+
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Core Features](#core-features)
+3. [Technology Stack](#technology-stack)
+4. [Getting Started](#getting-started)
+5. [Environment Variables](#environment-variables)
+6. [Database Setup](#database-setup)
+7. [API Endpoints](#api-endpoints)
+8. [Testing](#testing)
+9. [Contribution](#contribution)
+10. [License](#license)
+11. [Contact](#contact)
+
+## Introduction
+
+JournalHub API is designed to be the central hub for journaling applications, offering robust and scalable endpoints for managing user accounts, journal entries, and application-wide settings. This API is intended to be used by client applications, including web and mobile platforms, that require a reliable and secure backend service for journaling.
 
 ## Core Features
 
-- **User Authentication**: Secure user registration and login with email verification.
-- **Rich Text Editor**: A robust editor to create and format journal entries.
-- **Tagging System**: Organize journal entries with tags for easy retrieval.
-- **Search Functionality**: Quickly find journal entries by keywords.
-- **Privacy Controls**: Set journal entries as private or public.
-- **Responsive Design**: Accessible on both desktop and mobile devices.
+- **User Authentication & Authorization**: Secure user registration, login, and session management using JWT.
+- **Journal Entries Management**: CRUD operations for journal entries, with options to mark entries as public or private.
+- **Search Functionality**: Full-text search across journal entries.
+- **Email Notifications**: Automatic email notifications for user registration, profile updates, and password changes.
+- **Rate Limiting & Security**: Built-in rate limiting to protect against abuse and secure password storage using bcrypt.
+- **Token Blacklisting**: Ensures secure logout and session invalidation by blacklisting JWTs.
+- **Statistics**: API endpoints to fetch application statistics, including user and journal entry counts.
+- **Logging and Monitoring**: Comprehensive logging and monitoring for tracking application performance and issues.
 
-## Building Blocks
+## Technology Stack
 
-JournalHub is built using modern web technologies:
+- **Node.js**: JavaScript runtime for building the server.
+- **Express.js**: Web framework for creating RESTful APIs.
+- **MongoDB**: NoSQL database for storing user and journal data.
+- **Mongoose**: ODM for MongoDB, managing data relationships and schema validation.
+- **JWT**: JSON Web Tokens for secure user authentication.
+- **bcrypt**: Library for hashing user passwords.
+- **Nodemailer**: Library for sending emails.
+- **dotenv**: Module to load environment variables from a `.env` file.
 
-- **Frontend**: (found_here: [GitHub]https://github.com/legennd48/journalhub-frontend.git)
-  - **React**: For building the user interface.
-  - **Redux**: For state management.
-  - **React Router**: For navigation.
-  - **CSS/SCSS**: For styling.
-- **Backend**:
-  - **Node.js**: For server-side logic.
-  - **Express.js**: For handling HTTP requests.
-  - **MongoDB**: For database storage.
-  - **JWT**: For authentication.
+## Getting Started
 
-## Architecture
+### Prerequisites
 
-JournalHub follows a modular architecture with a clear separation of concerns:
-
-- **Client**: The frontend React application.
-- **Server**: The backend Node.js application.
-- **Database**: MongoDB for storing user data and journal entries.
-
-The architecture diagram below illustrates the high-level structure of JournalHub:
-
-![JournalHub Simplified High-level architecture diagram](JournalHub_High-level.png "Hight-Level Architecture diagram of Journalhub")
-
-### Architecture Analysis
-- **User**: Interacts with the JournalHub web interface.
-- **Frontend**: Sends requests to the Node.js server (Express.js) using HTTP requests.
-- **Node.js Server (Express.js)**: Receives requests and routes them to controllers for processing.
-- **Controllers**: Handle requests, interact with models for data access, and perform operations like user authentication and CRUD operations for journal entries.
-- **Models**: Define the structure and behavior of data, interacting with the MongoDB database for data storage and retrieval.
-- **MongoDB**: Stores user and journal entry data.
-- **Response**: The server sends response data back to the frontend for display.
-JournalHub adopts the Model-View-Controller (MVC) pattern, with a Node.js server and a MongoDB database.
-
-## Installation
-
-### Requirements
+Ensure you have the following installed:
 
 - **Node.js** (v14.x or higher)
-- **MongoDB** (local or cloud instance)
+- **MongoDB** (Local instance or MongoDB Atlas)
 
-### Steps
+### Installation
 
 1. **Clone the Repository**:
     ```bash
-    git clone https://github.com/yourusername/JournalHub.git
-    cd JournalHub
+    git clone https://github.com/yourusername/JournalHub-API.git
+    cd JournalHub-API
     ```
 
 2. **Install Dependencies**:
@@ -71,180 +66,203 @@ JournalHub adopts the Model-View-Controller (MVC) pattern, with a Node.js server
     ```
 
 3. **Set Up Environment Variables**:
-    Create a `.env` file in the root directory and add the following:
+    Create a `.env` file in the root directory with the following variables:
     ```env
     MONGO_URI=your_mongodb_uri
-    JWT_SECRET=your_jwt_secret
+    DB_NAME=your_database_name
+    SECRET_KEY=your_jwt_secret
+    SALT_ROUNDS=number_of_salt_rounds
+    EMAIL=your_email_address
+    PASSWORD=your_email_password
+    PORT=your_port_number
     ```
 
-4. **Run the Application**:
+4. **Database Initialization**:
+    Run the `setupDb.js` script to set up necessary indexes in MongoDB, including TTL (Time to Live) indexes.
+    ```bash
+    node setupDb.js
+    ```
+
+5. **Start the Server**:
     ```bash
     npm start
     ```
 
-    The application will be available at `http://localhost:5000`.
+    The API will be available at `http://localhost:<PORT>`.
 
-## Endpoints and Usage
+## Environment Variables
 
-### Authentication
+The following environment variables need to be configured:
 
-- **Register**:
-    ```bash
-    curl -X POST http://localhost:5000/api/user/register -H "Content-Type: application/json" -d '{"name": "user name", "email":"user@example.com", "password":"password"}'
+- **MONGO_URI**: Connection string for MongoDB.
+- **DB_NAME**: Name of the MongoDB database.
+- **SECRET_KEY**: Secret key used for JWT signing.
+- **SALT_ROUNDS**: Number of rounds for bcrypt password hashing.
+- **EMAIL**: SMTP email address for sending notifications.
+- **PASSWORD**: Password for the SMTP email account.
+- **PORT**: The port number on which the API will run.
+
+## Database Setup
+
+### Initial Setup
+
+To ensure the API functions correctly, you must set up the MongoDB database, including creating indexes for TTL on certain collections (like blacklisted tokens). The provided `setupDb.js` script automates this setup:
+
+```bash
+node setupDb.js
+```
+
+This script ensures that necessary indexes are created, particularly for handling token expiration and other time-sensitive data.
+
+## API Endpoints
+
+The JournalHub API offers a variety of endpoints to manage users, journal entries, and application statistics. Below are some key endpoints. For the full documentation, refer to the [API Documentation](./API_DOCUMENTATION.md).
+
+### User Management
+
+- **Register a User**: 
     ```
-
-- **Login**:
-    ```bash
-    curl -X POST http://localhost:5000/api/userlogin -H "Content-Type: application/json" -d '{"email":"user@example.com", "password":"password"}'
+    POST /api/user/register
     ```
+    Registers a new user with full name, nickname, email, and password.
 
-- **Logout**:
-    ```bash
-    curl -X POST http://localhost:5000/logout \
-    -H "Authorization: Bearer <token>"
+- **Login**: 
     ```
-
-### Journal Entries
-
-- **Create Journal Entry**:
-    ```bash
-    curl -X POST http://localhost:5000/api/journal-entries \
-    -H "Authorization: Bearer <token>" \
-    -H "userId: <user_id>" \
-    -H "Content-Type: application/json" \
-    -d '{ "date": "2024-06-27T00:00:00z", "title": "", "content": "" }'
+    POST /api/user/login
     ```
+    Authenticates a user and returns a JWT for session management.
 
-- **Get Journal Entries**:
-    ```bash
-    curl -X GET http://localhost:5000/journalEntries/user/<used_id> \
-    -H "Authorization: Bearer <token>"
-    -H "userId: <user_id>"
+- **Get User Profile**: 
     ```
-
-- **Get Single Journal Entry**:
-    ```bash
-    curl -X GET http://localhost:5000/journalEntries/<entry_id> \
-    -H "Authorization: Bearer <token>" \
-    -H "userId: <user_id>"
-
+    GET /api/user/profile
     ```
+    Retrieves the authenticated user's profile.
 
-- **Update Journal Entry**:
-    ```bash
-    curl -X PUT http://localhost:5000/JournalEntries/:id \
-    -H "Authorization: Bearer your_jwt_token" \
-    -H "Content-Type: application/json" \
-    -d '{"title":"Updated Title", "content":"Updated content."}'
+- **Update User Profile**: 
     ```
-
-- **Delete Journal Entry**:
-    ```bash
-    curl -X DELETE http://localhost:5000/JournalEntries/:id \
-    -H "Authorization: Bearer your_jwt_token"
+    PUT /api/user/profile
     ```
+    Updates the authenticated user's profile information.
 
-### User Profile
-- **Update user profile**
-    ```bash
-    curl -X PUT http://localhost:5000/profile/<user_id> \
-    -H "Authorization: Bearer <token>" \
-    -H "Content-Type: application/json" \
-    -d '{"name": "new name", "email": "new email"}'
+- **Delete User Account**: 
     ```
-
-- **Get user profile by id **
-    ```bash
-    curl -X GET http://localhost:5000/profile/<userId> \
-    -H "Authorization: Bearer <token>"
+    DELETE /api/user/profile
     ```
+    Deletes the authenticated user's account, including all journal entries.
 
-- **Update user profile**
-    ```bash
-    curl -X PUT http://localhost:5000/profile/<user_id> \
-    -H "Authorization: Bearer <token>" \
-    -H "Content-Type: application/json" \
-    -d '{"name": "new name", "email": "new email"}'
+### Journal Management
+
+- **Create a Journal Entry**: 
     ```
-
-- **Delete user profile**
-    ```bash
-    curl -X DELETE http://localhost:5000/profile/<user_id> \
-    -H "Authorization: Bearer <token>"
+    POST /api/journal-entries
     ```
+    Creates a new journal entry.
 
-### Check Stats
-
-- **Get total number of users and entries**
-    ```bash
-    curl -X GET http://localhost:5000/stats
+- **Get Journal Entries**: 
     ```
-
-- **Get total number of entries by user **
-    ```bash
-    curl -X GET http://localhost:5000/user/entries/<user_id>
+    GET /api/journal-entries/user
     ```
+    Retrieves all journal entries for the authenticated user.
 
-### Tags
-
-- **Add Tag to Journal Entry**:
-    ```bash
-    curl -X POST http://localhost:5000/api/journals/:id/tags -H "Authorization: Bearer your_jwt_token" -H "Content-Type: application/json" -d '{"tag":"MyTag"}'
+- **Update a Journal Entry**: 
     ```
-
-- **Remove Tag from Journal Entry**:
-    ```bash
-    curl -X DELETE http://localhost:5000/api/journals/:id/tags/:tag -H "Authorization: Bearer your_jwt_token"
+    PUT /api/journal-entries/:id
     ```
+    Updates an existing journal entry by its ID.
+
+- **Delete a Journal Entry**: 
+    ```
+    DELETE /api/journal-entries/:id
+    ```
+    Deletes a journal entry by its ID.
+
+- **Search Journal Entries**: 
+    ```
+    GET /api/search/journal-entries
+    ```
+    Searches through the user's journal entries.
+
+### Application Statistics
+
+- **Get API Status**: 
+    ```
+    GET /api/status
+    ```
+    Retrieves the current status of the API, including database connection status.
+
+- **Get Application Statistics**: 
+    ```
+    GET /api/stats
+    ```
+    Retrieves key statistics, such as the total number of users and journal entries in the system.
+
+- **Get User's Journal Entries Statistics**: 
+    ```
+    GET /api/user/:id/journal-entries
+    ```
+    Retrieves the count of journal entries for a specific user by their ID.
+
+## Testing
+
+JournalHub API includes a suite of unit and integration tests to ensure the stability and reliability of the codebase.
+
+### Running Tests
+
+To run the tests, use the following command:
+
+```bash
+npm test
+```
+
+For more detailed tests, including specific tests for user management, journal entries, and other utilities, refer to the `__tests__` directory.
+
+### Debugging Tests
+
+If you encounter issues with open handles during tests, use:
+
+```bash
+npx jest --detectOpenHandles
+```
+
+This command helps identify asynchronous operations that might be keeping the process open after tests complete.
 
 ## Contribution
 
-We welcome contributions to JournalHub! To contribute:
+We welcome contributions to the JournalHub API! To contribute:
 
 1. **Fork the repository**:
-    Click on the 'Fork' button at the top right corner of this repository page.
-
-2. **Clone your forked repository**:
     ```bash
-    git clone https://github.com/yourusername/JournalHub.git
-    cd JournalHub
+    git fork https://github.com/legennd48/JournalHub_API.git
+    cd JournalHub-API
     ```
 
-3. **Create a new branch**:
+2. **Create a new branch**:
     ```bash
     git checkout -b feature-branch
     ```
 
-4. **Make your changes** and **commit**:
+3. **Make your changes and commit**:
     ```bash
     git add .
-    git commit -m "Description of the feature or fix"
+    git commit -m "Description of your changes"
     ```
 
-5. **Push to your forked repository**:
+4. **Push to your forked repository**:
     ```bash
     git push origin feature-branch
     ```
 
-6. **Open a Pull Request**:
+5. **Open a Pull Request**:
     Go to the original repository and open a pull request with a detailed description of your changes.
 
-## Licensing
+## License
 
-JournalHub is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-## Authors
-- Abdulrazzaq Liasu (Project lead) [Github](https://github.com/legennd48)
-- Monwabisi Ndlovu (Backend) [Github](https://github.com/Monwabisindlovu)
-- Salami Oluwatosin (Backend) [Github](https://github.com/LusterPearl)
+## Contact
 
-## Similar Projects
+For any questions or issues, please contact:
 
-Here are some related projects that might interest you:
-
-- [DiaryApp](https://github.com/example/DiaryApp): Another open-source diary application.
-- [NotesHub](https://github.com/example/NotesHub): A web application for managing notes and to-do lists.
+- **Abdulrazzaq Liasu** - [GitHub](https://github.com/legennd48)
 
 ---
-
-Thank you for using JournalHub! We hope it helps you capture and preserve your most precious thoughts and experiences.
