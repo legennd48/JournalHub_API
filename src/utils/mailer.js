@@ -1,10 +1,12 @@
 import nodemailer from 'nodemailer';
-require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 if (!process.env.EMAIL || !process.env.PASSWORD) {
     throw new Error('Email and password environment variables are not set');
   }
-  
+
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -12,7 +14,7 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
       pass: process.env.PASSWORD,
     },
   });
-  
+
   async function sendWelcomeMail(email) {
     try {
       const mailOptions = {
@@ -25,11 +27,10 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
           <p>We hope you enjoy our service.</p>
         `,
       };
-  
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent:', info.response);
+
+      await transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error('Error sending email:', error);
+      // console.error('Error sending email:', error);
     }
   }
 
@@ -47,11 +48,10 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
           <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
         `,
       };
-  
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent:', info.response);
+
+      await transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error('Error sending email:', error);
+      // console.error('Error sending email:', error);
     }
   }
 
@@ -66,11 +66,10 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
           <p>This is a confirmation that the password for your account has been changed.</p>
         `,
       };
-  
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent:', info.response);
+
+      await transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error('Error sending email:', error);
+      // console.error('Error sending email:', error);
     }
   }
 
@@ -85,11 +84,10 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
           <p>This is a confirmation that your JournalHub account has been deleted.</p>
         `,
       };
-  
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent:', info.response);
+
+      await transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error('Error sending email:', error);
+      // console.error('Error sending email:', error);
     }
   }
 
@@ -104,14 +102,13 @@ if (!process.env.EMAIL || !process.env.PASSWORD) {
           <p>This is a confirmation that your JournalHub profile has been updated.</p>
         `,
       };
-  
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent:', info.response);
+
+      await transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error('Error sending email:', error);
+      // console.error('Error sending email:', error);
     }
   }
-  
+
   export {
     sendWelcomeMail,
     sendPasswordResetMail,

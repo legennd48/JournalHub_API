@@ -33,7 +33,6 @@ class JournalEntry {
    * @returns {Promise<Object>} The created journal entry.
    */
   static async createJournalEntry(title, content, author_id, author_name, createdAt, isPublic) {
-    console.log('isPublic:', isPublic); // debug line, remember to remove
     const newEntry = new JournalEntry(title, content, author_id, author_name, createdAt, isPublic);
     const result = await dbClient.db.collection('journal_entries').insertOne(newEntry);
     return result.ops[0];
@@ -83,9 +82,9 @@ class JournalEntry {
     }
      // Prepare the update object with only the fields that are provided
      const updateData = {};
-     if (title !== undefined) updateData.title = title;
-     if (content !== undefined) updateData.content = content;
-     if (isPublic !== undefined) updateData.isPublic = isPublic;
+     if (title !== undefined) {updateData.title = title;}
+     if (content !== undefined) {updateData.content = content;}
+     if (isPublic !== undefined) {updateData.isPublic = isPublic;}
 
     const updatedEntry = await dbClient.db.collection('journal_entries').findOneAndUpdate(
       { _id: new ObjectID(entryId) },
