@@ -67,6 +67,17 @@ async getUserEntries(req, res) {
       .json({ error: 'An error occurred while fetching user entries.' });
   }
 }
+
+/**
+ * Gets the home page of the API
+ * @param {object} req The request object.
+ * @param {onject} res The response object
+ */
+async getHome (req, res) {
+  logger.info
+  return res.status(HTTP_STATUS_OK).end(`Welcome To JournalHub. \nPlease refere the Documentation On how to use`)
+}
+
 }
 
 export default new AppController();
