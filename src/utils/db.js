@@ -32,8 +32,7 @@ class DBClient extends EventEmitter {
    */
   async allUsers() {
     try {
-      const count = await this.client.db()
-        .collection('users')
+      const count = await this.db.collection('users')
         .countDocuments();
       return count;
     } catch (error) {
@@ -48,8 +47,7 @@ class DBClient extends EventEmitter {
    */
   async allEntries() {
     try {
-      const count = await this.client.db()
-        .collection('journal_entries')
+      const count = await this.db.collection('journal_entries')
         .countDocuments();
       return count;
     } catch (error) {
@@ -65,8 +63,7 @@ class DBClient extends EventEmitter {
    */
   async allUserEntries(userId) {
     try {
-      const count = await this.client.db()
-        .collection('journal_entries')
+      const count = await this.db.collection('journal_entries')
         .countDocuments({ authorId: ObjectID(userId) });
       return count;
     } catch (error) {

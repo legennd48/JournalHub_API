@@ -40,6 +40,7 @@ router.use(requestRateLimiter);
 router.get('/api/status', AppController.getStatus); // Check application status
 router.get('/api/stats', AppController.getStats);
 router.get('/api/user/:id/journal-entries', AppController.getUserEntries);
+router.get('/', AppController.getHome);
 
 // User Registration & Authentication
 router.post('/api/user/register', validateRequest(userRegistrationSchema), registerUser); // Register a new user

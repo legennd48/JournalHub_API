@@ -31,12 +31,6 @@ app.use(cors(corsOptions)); // Use CORS middleware
 app.use(express.json());
 app.use(bodyParser.json());
 
-// Middleware to log all requests
-// app.use(requestLogger);
-
-// Middleware to rate limit requests
-// app.use(requestRateLimiter);
-
 // Route handling
 app.use('/', routes);
 
