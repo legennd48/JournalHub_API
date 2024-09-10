@@ -21,6 +21,9 @@ JournalHub API serves as the backend core for both web and mobile journaling app
 
 JournalHub API is designed to be the central hub for journaling applications, offering robust and scalable endpoints for managing user accounts, journal entries, and application-wide settings. This API is intended to be used by client applications, including web and mobile platforms, that require a reliable and secure backend service for journaling.
 
+## Base URL
+[https://journalhub-bay.vercel.app/](https://journalhub-bay.vercel.app/)
+
 ## Core Features
 
 - **User Authentication & Authorization**: Secure user registration, login, and session management using JWT.
