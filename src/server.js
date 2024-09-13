@@ -5,9 +5,12 @@ import dbClient from './utils/db';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import { logger } from './middleware/logger';
+import path from 'path';
 
 // Load environment variables from .env file
 dotenv.config();
+
+
 
 // Initialize the Express app
 const app = express();
@@ -21,15 +24,18 @@ if (!port) {
 
 // Configure CORS
 const corsOptions = {
-    origin: 'http://localhost:3000', // Allow requests from this origin
+    origin: 'http://localhost:3000',
     optionsSuccessStatus: 200
 };
 
-app.use(cors(corsOptions)); // Use CORS middleware
+app.use(cors(corsOptions));
+
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Middleware to parse JSON
 app.use(express.json());
 app.use(bodyParser.json());
+
 
 // Route handling
 app.use('/', routes);

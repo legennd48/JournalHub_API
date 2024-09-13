@@ -1,8 +1,9 @@
 // /* eslint-disable class-methods-use-this */
 import { MongoClient, ObjectID } from 'mongodb';
 import EventEmitter from 'events';
-import dotenv from 'dotenv';
 import { logger } from '../middleware/logger';
+import dotenv from 'dotenv';
+
 dotenv.config();
 
 const { MONGO_URI } = process.env; // Url to be set in .env file
@@ -32,8 +33,7 @@ class DBClient extends EventEmitter {
    */
   async allUsers() {
     try {
-      const count = await this.db.collection('users')
-        .countDocuments();
+      const count = await this.db.collection('users').countDocuments();
       return count;
     } catch (error) {
       logger.error('Error fetching user count:', error);
@@ -47,7 +47,8 @@ class DBClient extends EventEmitter {
    */
   async allEntries() {
     try {
-      const count = await this.db.collection('journal_entries')
+      const count = await this.db
+        .collection('journal_entries')
         .countDocuments();
       return count;
     } catch (error) {
@@ -63,7 +64,8 @@ class DBClient extends EventEmitter {
    */
   async allUserEntries(userId) {
     try {
-      const count = await this.db.collection('journal_entries')
+      const count = await this.client.db()
+        .collection('journal_entries')
         .countDocuments({ authorId: ObjectID(userId) });
       return count;
     } catch (error) {
