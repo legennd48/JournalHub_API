@@ -1,0 +1,6 @@
+{"level":"info","message":"Server is running on http://localhost:5000","timestamp":"2024-09-13T12:33:09.115Z"}
+{"level":"info","message":"Status retrieved successfully. Status code: 200","timestamp":"2024-09-13T12:33:40.453Z"}
+{"level":"info","message":"Statistics retrieved successfully. Status code: 200","timestamp":"2024-09-13T12:33:47.616Z"}
+{"level":"info","message":"Server is running on http://localhost:5000","timestamp":"2024-10-13T15:58:41.302Z"}
+{"level":"info","message":"Status retrieved successfully. Status code: 200","timestamp":"2024-10-13T15:59:18.820Z"}
+{"level":"info","message":"Server is running on http://localhost:5000","timestamp":"2024-10-13T16:15:46.626Z"}
