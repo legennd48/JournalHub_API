@@ -4,48 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JournalHub API</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #4CAF50;
-            padding: 5px;
-        }
-        header img {
-            width: 200px;
-            height: auto;
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #555;
-            font-size: 1.2em;
-        }
-        a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .container {
-            padding: 50px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <img src="./images/newlogo.png" alt="JournalHub Logo">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+              <img src="./images/logo.png" alt="Journalhub logo">
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#docs">Documentation</a></li>
+                    <li><a href="#get-started">Get Started</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
-    <div class="container">
-        <h1>Welcome to the JournalHub API!</h1>
-        <p>Please refer to the <a href="https://legennd48.github.io/journalhub_docs">documentation</a> for usage details.</p>
-    </div>
+
+    <!-- Hero Section -->
+~<section class="hero">
+  <div class="container">
+    <img src="./images/journal-hero2.jpg" alt="Journaling Hero Image" class="hero-img">
+    <h1>Secure Solution for Cloud-Based Journaling</h1>
+    <!-- <p>Build the future of journaling with our API. Create, manage, and store journal entries with ease. Scale from personal to enterprise solutions.</p> -->
+    <a href="#get-started" class="cta-btn">Start</a>
+  </div>
+ </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+          <h2>Key Features</h2>
+          <div class="feature-list">
+            <div class="feature-item">
+              <img src="./images/security.png" alt="Security Icon" class="feature-icon">
+              <h3>Secure Authentication</h3>
+              <p>Advanced JWT-based authentication ensures user data is safe and sessions are secure.</p>
+            </div>
+            <div class="feature-item">
+              <img src="./images/cloud-storage.png" alt="Cloud Storage Icon" class="feature-icon">
+              <h3>Cloud-Based Storage</h3>
+              <p>All journal entries are stored securely in the cloud for easy access from anywhere.</p>
+            </div>
+            <div class="feature-item">
+              <img src="./images/public-relations.png" alt="Privacy Icon" class="feature-icon">
+              <h3>Public & Private Entries</h3>
+              <p>Users can create both public and private journal entries, with complete privacy control.</p>
+            </div>
+            <div class="feature-item">
+              <img src="./images/search.png" alt="Search Icon" class="feature-icon">
+              <h3>Search & Filters</h3>
+              <p>Powerful search and filter functionalities help users easily manage and retrieve entries.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    <!-- Documentation Section -->
+    <section id="docs" class="documentation">
+        <div class="container">
+            <h2>Developer Documentation</h2>
+            <p>Explore the full documentation to get started with the JournalHub API, including endpoints, request formats, and authentication details.</p>
+            <a href="https://legennd48.github.io/journalhub_docs/" class="doc-btn">View Documentation</a>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section id="get-started" class="cta">
+        <div class="container">
+            <h2>Start Building Today</h2>
+            <p>Ready to create the future of journaling? Start integrating with the JournalHub API now!</p>
+            <a href="https://legennd48.github.io/journalhub_docs/" class="cta-btn">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 JournalHub API. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/legennd48">GitHub</a>
+                <a href="mailto:journalhub2@gmail.com">Contact Us</a>
+                <a href="#">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
